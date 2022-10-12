@@ -1,6 +1,14 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/enums/tipos.dart';
+import 'package:appli/pages/equipamentos.dart';
+import 'package:appli/pages/estoque.dart';
+import 'package:appli/pages/ferramentas.dart';
+//import 'package:appli/pages/locais.dart';
+import 'package:appli/pages/login.dart';
+import 'package:appli/widgets/local.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/horizontal_calendar.dart';
 import '../widgets/item_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,178 +23,165 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100.0,
-        backgroundColor: Colors.white60,
-        elevation: 5,
-        title: Column(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Olá, Josh',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Container(
-                    height: 45,
-                    width: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.blue[400],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: const Icon(Icons.person),
-                  )
-                ],
+        backgroundColor: CustomColors.deepPurple,
+        elevation: 0,
+        title: const Text('AppLi'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const Login(),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.help_outline),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Column(
-          children: [
-            Flexible(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    listDate('Sab.', '08', 'Out.', true),
-                    listDate('Dom.', '09', 'Out.', false),
-                    listDate('Seg.', '10', 'Out.', false),
-                    listDate('Ter.', '11', 'Out.', false),
-                    listDate('Qua.', '12', 'Out.', false),
-                    listDate('Qui.', '13', 'Out.', false),
-                    listDate('Sex.', '14', 'Out.', false),
-                    listDate('Sab.', '15', 'Out.', false),
-                    listDate('Dom.', '16', 'Out.', false),
-                    listDate('Seg.', '17', 'Out.', false),
-                    listDate('Ter.', '18', 'Out.', false),
-                    listDate('Qua.', '19', 'Out.', false),
-                    listDate('Qui.', '20', 'Out.', false),
-                    listDate('Sex.', '21', 'Out.', false),
-                    listDate('Sab.', '22', 'Out.', false),
-                    listDate('Dom.', '23', 'Out.', false),
-                    listDate('Seg.', '24', 'Out.', false),
-                    listDate('Ter.', '25', 'Out.', false),
-                    listDate('Qua.', '26', 'Out.', false),
-                    listDate('Qui.', '27', 'Out.', false),
-                    listDate('Sex.', '28', 'Out.', false),
-                    listDate('Sab.', '29', 'Out.', false),
-                    listDate('Dom.', '30', 'Out.', false),
-                    listDate('Seg.', '31', 'Out.', false),
-                  ],
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Olá, nome
+
+          Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: const BoxDecoration(
+              color: CustomColors.deepPurple,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0),
+              ),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(24.0),
+              child: Text(
+                'Olá, Josh',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
                 ),
               ),
             ),
-            Flexible(
-              flex: 5,
+          ),
+
+          //Lista de ações
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(5, 5),
+                    blurRadius: 7,
+                    spreadRadius: 2,
+                  )
+                ],
+              ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: const [
-                      ItemButton(
-                        title: 'Locais',
-                        icon: Icons.app_registration_outlined,
-                        color: CustomColors.blue,
+                  ItemButton(
+                    title: 'Ferramentas',
+                    icon: Icons.hardware_rounded,
+                    color: CustomColors.deepBlue,
+                    onTap: () => onTap(
+                      MaterialPageRoute(
+                        builder: (context) => const Ferramentas(),
                       ),
-                      ItemButton(
-                        title: 'Equipamentos',
-                        icon: Icons.settings,
-                        color: CustomColors.lightOrange,
-                      ),
-                    ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      ItemButton(
-                        title: 'Ferramentas',
-                        icon: Icons.handyman_rounded,
-                        color: CustomColors.orange,
+                  ItemButton(
+                    title: 'Estoque',
+                    icon: Icons.inventory,
+                    color: CustomColors.orange,
+                    onTap: () => onTap(
+                      MaterialPageRoute(
+                        builder: (context) => const Estoque(),
                       ),
-                      ItemButton(
-                        title: 'Estoque',
-                        icon: Icons.inventory,
-                        color: CustomColors.pink,
-                      ),
-                    ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      ItemButton(
-                        title: 'Funcionários',
-                        icon: Icons.group,
-                        color: CustomColors.purple,
+                  ItemButton(
+                    title: 'Equipamentos',
+                    icon: Icons.handyman_rounded,
+                    color: CustomColors.pink,
+                    onTap: () => onTap(
+                      MaterialPageRoute(
+                        builder: (context) => const Equipamentos(),
                       ),
-                    ],
+                    ),
+                  ),
+                  ItemButton(
+                    title: 'Funcionários',
+                    icon: Icons.group,
+                    color: CustomColors.deepPurple,
+                    onTap: () => onTap(
+                      MaterialPageRoute(
+                        builder: (context) => const Equipamentos(),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Text(
+              'Locais',
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                const Local(
+                    titulo: 'Terreno',
+                    endereco: 'Estrada de Servidão Sete',
+                    tipo: Tipos.empresa),
+                const Local(
+                    titulo: 'Terreno 1',
+                    endereco: 'Travessa Linda Darnel',
+                    tipo: Tipos.empresa),
+                const Local(
+                    titulo: 'Maccris',
+                    endereco: 'Rua Juquiá - Santo André',
+                    tipo: Tipos.obra),
+                const Local(
+                    titulo: 'Recon',
+                    endereco: 'Rua Paraguai - Santo André',
+                    tipo: Tipos.obra),
+                TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.add_circle_outline_rounded),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Cadastrar Local'),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
 
-  Padding listDate(String day, String number, String month, bool today) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Container(
-        width: 45,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(5.0),
-          ),
-          color: today ? CustomColors.purple : Colors.grey[300],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                day,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.black54,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                number,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                month,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void onTap(Route route) {
+    Navigator.of(context).push(route);
   }
 }

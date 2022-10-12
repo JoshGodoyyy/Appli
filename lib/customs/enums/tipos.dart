@@ -1,0 +1,4 @@
+enum Tipos {
+  empresa,
+  obra,
+}
