@@ -5,3 +5,10 @@ const pFonte = TextStyle(
   fontWeight: FontWeight.bold,
   fontFamily: 'OpenSans',
 );
+
+const pShadow = BoxShadow(
+  color: Colors.grey,
+  offset: Offset(5, 5),
+  blurRadius: 7,
+  spreadRadius: 2,
+);

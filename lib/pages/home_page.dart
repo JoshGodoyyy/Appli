@@ -1,11 +1,11 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/enums/tipos.dart';
+import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/pages/equipamentos.dart';
 import 'package:appli/pages/estoque.dart';
 import 'package:appli/pages/ferramentas.dart';
-//import 'package:appli/pages/locais.dart';
+import 'package:appli/pages/funcionarios.dart';
 import 'package:appli/pages/login.dart';
-import 'package:appli/widgets/local.dart';
+import 'package:appli/pages/sobre.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/horizontal_calendar.dart';
@@ -37,16 +37,22 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Sobre(),
+                ),
+              );
+            },
             icon: const Icon(Icons.help_outline),
           ),
         ],
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Olá, nome
-
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
@@ -59,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             child: const Padding(
               padding: EdgeInsets.all(24.0),
               child: Text(
-                'Olá, Josh',
+                'Olá, userName',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w500,
@@ -69,99 +75,98 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          //Lista de ações
+          const SizedBox(height: 4),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(5, 5),
-                    blurRadius: 7,
-                    spreadRadius: 2,
-                  )
-                ],
-              ),
-              child: Column(
-                children: [
-                  ItemButton(
-                    title: 'Ferramentas',
-                    icon: Icons.hardware_rounded,
-                    color: CustomColors.deepBlue,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Ferramentas(),
-                      ),
-                    ),
-                  ),
-                  ItemButton(
-                    title: 'Estoque',
-                    icon: Icons.inventory,
-                    color: CustomColors.orange,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Estoque(),
-                      ),
-                    ),
-                  ),
-                  ItemButton(
-                    title: 'Equipamentos',
-                    icon: Icons.handyman_rounded,
-                    color: CustomColors.pink,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Equipamentos(),
-                      ),
-                    ),
-                  ),
-                  ItemButton(
-                    title: 'Funcionários',
-                    icon: Icons.group,
-                    color: CustomColors.deepPurple,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Equipamentos(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Text(
-              'Locais',
-              style: TextStyle(fontSize: 16.0),
-            ),
-          ),
-          Flexible(
+          Expanded(
             child: ListView(
-              shrinkWrap: true,
               children: [
-                const Local(
-                    titulo: 'Terreno',
-                    endereco: 'Estrada de Servidão Sete',
-                    tipo: Tipos.empresa),
-                const Local(
-                    titulo: 'Terreno 1',
-                    endereco: 'Travessa Linda Darnel',
-                    tipo: Tipos.empresa),
-                const Local(
-                    titulo: 'Maccris',
-                    endereco: 'Rua Juquiá - Santo André',
-                    tipo: Tipos.obra),
-                const Local(
-                    titulo: 'Recon',
-                    endereco: 'Rua Paraguai - Santo André',
-                    tipo: Tipos.obra),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  child: ListDate(),
+                ),
+
+                const SizedBox(height: 4.0),
+
+                //Lista de ações
+
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white,
+                      boxShadow: const [
+                        pShadow,
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ItemButton(
+                          title: 'Ferramentas',
+                          icon: Icons.hardware_rounded,
+                          color: CustomColors.deepBlue,
+                          onTap: () => onTap(
+                            MaterialPageRoute(
+                              builder: (context) => const Ferramentas(),
+                            ),
+                          ),
+                        ),
+                        ItemButton(
+                          title: 'Estoque',
+                          icon: Icons.inventory,
+                          color: CustomColors.orange,
+                          onTap: () => onTap(
+                            MaterialPageRoute(
+                              builder: (context) => const Estoque(),
+                            ),
+                          ),
+                        ),
+                        ItemButton(
+                          title: 'Equipamentos',
+                          icon: Icons.handyman_rounded,
+                          color: CustomColors.pink,
+                          onTap: () => onTap(
+                            MaterialPageRoute(
+                              builder: (context) => const Equipamentos(),
+                            ),
+                          ),
+                        ),
+                        ItemButton(
+                          title: 'Funcionários',
+                          icon: Icons.group,
+                          color: CustomColors.deepPurple,
+                          onTap: () => onTap(
+                            MaterialPageRoute(
+                              builder: (context) => const Funcionarios(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 4.0),
+
+                const Center(
+                  child: Text(
+                    'Locais',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 4.0),
+
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    bottomSheet(context);
+                  },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
@@ -172,11 +177,109 @@ class _HomePageState extends State<HomePage> {
                       )
                     ],
                   ),
-                ),
+                )
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Future<dynamic> bottomSheet(BuildContext context) {
+    TextEditingController tituloController = TextEditingController();
+    TextEditingController enderecoController = TextEditingController();
+
+    void clearAll() {
+      tituloController.clear();
+      enderecoController.clear();
+    }
+
+    return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
+        ),
+      ),
+      backgroundColor: const Color(0xFFe2e2e2),
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.4,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const Center(
+                    child: Text(
+                      'Adicionar Local',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  buildTextField(
+                    tituloController,
+                    'Titulo',
+                    Icons.text_fields_rounded,
+                  ),
+                  const SizedBox(height: 16.0),
+                  buildTextField(
+                    enderecoController,
+                    'Endereco',
+                    Icons.pin_drop_rounded,
+                  ),
+                  const SizedBox(height: 16.0),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        clearAll();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColors.deepPurple,
+                        padding: const EdgeInsets.all(16.0),
+                      ),
+                      child: const Text('Adicionar'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Container buildTextField(controller, String hint, IconData icon) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 3.0,
+            offset: Offset(5, 5),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          prefixIcon: Icon(icon),
+          hintText: hint,
+        ),
       ),
     );
   }

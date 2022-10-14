@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wgcode.appli">
    <application
-        android:label="appli"
+        android:label="Appli"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
