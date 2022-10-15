@@ -4,7 +4,7 @@ Aplicativo para controle de materiais e equipamentos
 
 ### Login
 Ao abrir o App, você precisa realizar o login
-![Login](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/Login.png?token=GHSAT0AAAAAABZ7UHLI4DK26QZJPP7OWJQAY2LHESA)
+![Login](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/Login.png?token=GHSAT0AAAAAABZ7UHLJTXQTWLVUFD3RTJREY2LHK6A)
 
 ### Tela Inicial
 Na tela inicial é onde você tem as possibilidades de ações no aplicativo
