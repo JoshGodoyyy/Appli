@@ -12,3 +12,21 @@ const pShadow = BoxShadow(
   blurRadius: 7,
   spreadRadius: 2,
 );
+
+final pDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(10.0),
+  boxShadow: const [
+    BoxShadow(
+      color: Colors.black12,
+      blurRadius: 3.0,
+      offset: Offset(5, 5),
+    ),
+  ],
+);
+
+const pTitulo = TextStyle(
+  color: Colors.black54,
+  fontSize: 17.0,
+  fontWeight: FontWeight.w500,
+);

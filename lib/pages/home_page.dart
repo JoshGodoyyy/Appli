@@ -204,6 +204,7 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: const Color(0xFFe2e2e2),
       isScrollControlled: true,
+      isDismissible: false,
       context: context,
       builder: (context) {
         return FractionallySizedBox(
@@ -241,6 +242,9 @@ class _HomePageState extends State<HomePage> {
                     child: ElevatedButton(
                       onPressed: () {
                         clearAll();
+                        setState(() {
+                          Navigator.pop(context);
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: CustomColors.deepPurple,
@@ -260,17 +264,7 @@ class _HomePageState extends State<HomePage> {
 
   Container buildTextField(controller, String hint, IconData icon) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 3.0,
-            offset: Offset(5, 5),
-          ),
-        ],
-      ),
+      decoration: pDecoration,
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
