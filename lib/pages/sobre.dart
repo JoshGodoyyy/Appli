@@ -73,7 +73,7 @@ class Sobre extends StatelessWidget {
           ),
           SizedBox(height: height),
           const Text(
-              'Utilize o botão, abaixo da lista de endereços para cadastrar um novo local, este local é onde os equipamentos, ferramentas e funcionários poderão ser alocados.'),
+              'Utilize o botão, "Cadastrar Local" abaixo da lista de endereços na tela inicial, para cadastrar um novo local, este local é onde os equipamentos, ferramentas e funcionários poderão ser alocados.'),
           SizedBox(height: height),
           Column(
             children: [

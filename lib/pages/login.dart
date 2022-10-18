@@ -102,7 +102,9 @@ class _LoginState extends State<Login> {
                         } else {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => const HomePage(),
+                              builder: (context) => HomePage(
+                                userName: nomeController.text,
+                              ),
                             ),
                           );
                         }

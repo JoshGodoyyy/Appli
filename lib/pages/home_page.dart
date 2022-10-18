@@ -1,4 +1,5 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/enums/tipos.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/pages/equipamentos.dart';
 import 'package:appli/pages/estoque.dart';
@@ -10,15 +11,19 @@ import 'package:flutter/material.dart';
 
 import '../widgets/horizontal_calendar.dart';
 import '../widgets/item_button.dart';
+import '../widgets/local.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.userName});
+  final String userName;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Local> locais = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,11 +67,11 @@ class _HomePageState extends State<HomePage> {
                 bottomRight: Radius.circular(10.0),
               ),
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(24.0),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
               child: Text(
-                'Olá, userName',
-                style: TextStyle(
+                'Olá, ${widget.userName}',
+                style: const TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
@@ -163,6 +168,13 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 4.0),
 
+                for (var i in locais)
+                  Local(
+                    titulo: i.titulo,
+                    endereco: i.endereco,
+                    tipo: i.tipo,
+                  ),
+
                 TextButton(
                   onPressed: () {
                     bottomSheet(context);
@@ -204,57 +216,73 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: const Color(0xFFe2e2e2),
       isScrollControlled: true,
-      isDismissible: false,
       context: context,
       builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.4,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  const Center(
-                    child: Text(
-                      'Adicionar Local',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Center(
+                  child: Text(
+                    'Adicionar Local',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 20.0),
-                  buildTextField(
-                    tituloController,
-                    'Titulo',
-                    Icons.text_fields_rounded,
-                  ),
-                  const SizedBox(height: 16.0),
-                  buildTextField(
-                    enderecoController,
-                    'Endereco',
-                    Icons.pin_drop_rounded,
-                  ),
-                  const SizedBox(height: 16.0),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        clearAll();
-                        setState(() {
-                          Navigator.pop(context);
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: CustomColors.deepPurple,
-                        padding: const EdgeInsets.all(16.0),
-                      ),
-                      child: const Text('Adicionar'),
+                ),
+                const SizedBox(height: 20.0),
+                buildTextField(
+                  tituloController,
+                  'Titulo',
+                  Icons.text_fields_rounded,
+                ),
+                const SizedBox(height: 16.0),
+                buildTextField(
+                  enderecoController,
+                  'Endereco',
+                  Icons.pin_drop_rounded,
+                ),
+                const SizedBox(height: 16.0),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (tituloController.text == '' ||
+                          enderecoController.text == '') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Você precisa preencher todos os campos'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      setState(() {
+                        locais.add(
+                          Local(
+                            titulo: tituloController.text,
+                            endereco: enderecoController.text,
+                            tipo: Tipos.empresa,
+                          ),
+                        );
+                      });
+
+                      clearAll();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: CustomColors.deepPurple,
+                      padding: const EdgeInsets.all(16.0),
                     ),
+                    child: const Text('Adicionar'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

@@ -12,6 +12,7 @@ class Funcionarios extends StatefulWidget {
 }
 
 class _FuncionariosState extends State<Funcionarios> {
+  List<ListItem> funcionarios = [];
   @override
   Widget build(BuildContext context) {
     TextEditingController nomeController = TextEditingController();
@@ -45,7 +46,16 @@ class _FuncionariosState extends State<Funcionarios> {
                   if (nomeController.text == '' ||
                       funcaoController.text == '') {
                     showSnack('Você precisa digitar um nome e função');
+                    return;
                   }
+
+                  setState(() {
+                    funcionarios.add(
+                      ListItem(
+                          nome: nomeController.text,
+                          funcao: funcaoController.text),
+                    );
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16.0),
@@ -63,11 +73,9 @@ class _FuncionariosState extends State<Funcionarios> {
           ),
           Expanded(
             child: ListView(
-              children: const [
-                ListItem(
-                  nome: 'Nome',
-                  funcao: 'Função',
-                ),
+              children: [
+                for (var i in funcionarios)
+                  ListItem(nome: i.nome, funcao: i.funcao)
               ],
             ),
           ),
