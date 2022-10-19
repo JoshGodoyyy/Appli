@@ -186,13 +186,13 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text('Cadastrar Local'),
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -263,15 +263,17 @@ class _HomePageState extends State<HomePage> {
                         return;
                       }
 
-                      setState(() {
-                        locais.add(
-                          Local(
-                            titulo: tituloController.text,
-                            endereco: enderecoController.text,
-                            tipo: Tipos.empresa,
-                          ),
-                        );
-                      });
+                      setState(
+                        () {
+                          locais.add(
+                            Local(
+                              titulo: tituloController.text,
+                              endereco: enderecoController.text,
+                              tipo: Tipos.empresa,
+                            ),
+                          );
+                        },
+                      );
 
                       clearAll();
                     },

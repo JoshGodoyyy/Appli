@@ -99,15 +99,16 @@ class _LoginState extends State<Login> {
                               content: Text('Você precisa digitar um nome'),
                             ),
                           );
-                        } else {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(
-                                userName: nomeController.text,
-                              ),
-                            ),
-                          );
+
+                          return;
                         }
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(
+                              userName: nomeController.text,
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(24.0),
