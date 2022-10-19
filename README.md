@@ -18,6 +18,16 @@ Ainda na tela inicial, é possível adicionar os locais de trabalho
 Na barra de título da tela inicial, é possível ter acesso à tela de ajuda
 ![Ajuda](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/Help.png?token=GHSAT0AAAAAABZ7UHLJ2SMO4UR6GJTI5CKWY2LHIJA)
 
+### Estoque
+Na tela de estoque, é possível ter acesso a duas opções, adicionar itens ao estoque e entregar item
+![AddEstoque](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/AdicionarAoEstoque.png)
+![Entregar](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/EntregarItem.png)
+
+### Equipamentos
+Na tela de equipamentos, é onde tem o controle de equipamentos
+![Equipamentos](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/Equipamentos.png)
+![AddEquipamento](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/AddEquipamento.png)
+
 ### Adicionar Funcionario
 Na tela de adicionar funcionários é onde se faz o gerenciamento, onde é possível fazer inserção, edição e remoção de funcionários
 ![AddFuncionario](https://raw.githubusercontent.com/JoshGodoyyy/Appli/master/images/Employees.png?token=GHSAT0AAAAAABZ7UHLJKSIZWE3YUYPEUKT2Y2LHJDA)
