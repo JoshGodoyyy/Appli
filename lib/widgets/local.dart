@@ -1,15 +1,11 @@
 import 'package:appli/customs/enums/tipos.dart';
+import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
-class Local extends StatelessWidget {
-  const Local(
-      {super.key,
-      required this.titulo,
-      required this.endereco,
-      required this.tipo});
-  final String titulo, endereco;
-  final Tipos tipo;
+class WidgetLocal extends StatelessWidget {
+  const WidgetLocal({super.key, required this.local});
+  final Local local;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,13 +34,20 @@ class Local extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     vertical: 24.0, horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Icon(
+                      local.tipo == Tipos.empresa
+                          ? Icons.business_rounded
+                          : Icons.construction,
+                      color: Colors.black54,
+                    ),
+                    const SizedBox(width: 16.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          titulo,
+                          local.titulo,
                           style: const TextStyle(
                             fontSize: 18.0,
                           ),
@@ -53,13 +56,14 @@ class Local extends StatelessWidget {
                           height: 8.0,
                         ),
                         Text(
-                          endereco,
+                          local.endereco,
                           style: const TextStyle(
                             fontSize: 14.0,
                           ),
                         ),
                       ],
                     ),
+                    Expanded(child: Container()),
                     const Icon(
                       Icons.arrow_forward_ios_rounded,
                       color: Colors.black38,

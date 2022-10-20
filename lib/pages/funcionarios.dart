@@ -1,8 +1,9 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/models/data.dart';
+import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/widgets/funcionario.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/list_item.dart';
 
 class Funcionarios extends StatefulWidget {
   const Funcionarios({super.key});
@@ -12,7 +13,6 @@ class Funcionarios extends StatefulWidget {
 }
 
 class _FuncionariosState extends State<Funcionarios> {
-  List<ListItem> funcionarios = [];
   @override
   Widget build(BuildContext context) {
     TextEditingController nomeController = TextEditingController();
@@ -50,11 +50,10 @@ class _FuncionariosState extends State<Funcionarios> {
                   }
 
                   setState(() {
-                    funcionarios.add(
-                      ListItem(
-                          nome: nomeController.text,
-                          funcao: funcaoController.text),
-                    );
+                    Funcionario funcionario = Funcionario(
+                        nome: nomeController.text,
+                        funcao: funcaoController.text);
+                    Locais.instance.funcionarios.add(funcionario);
                   });
                 },
                 style: ElevatedButton.styleFrom(
@@ -74,14 +73,23 @@ class _FuncionariosState extends State<Funcionarios> {
           Expanded(
             child: ListView(
               children: [
-                for (var i in funcionarios)
-                  ListItem(nome: i.nome, funcao: i.funcao)
+                for (var i in Locais.instance.funcionarios)
+                  WidgetFuncionario(
+                    funcionario: i,
+                    onDelete: onDelete,
+                  )
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void onDelete(Funcionario funcionario) {
+    setState(() {
+      Locais.instance.funcionarios.remove(funcionario);
+    });
   }
 
   Padding buildText(

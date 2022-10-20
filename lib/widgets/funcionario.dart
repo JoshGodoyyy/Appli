@@ -1,32 +1,33 @@
+import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../customs/utilities/constants.dart';
 
-class ListItem extends StatelessWidget {
-  const ListItem({
+class WidgetFuncionario extends StatelessWidget {
+  const WidgetFuncionario({
     super.key,
-    required this.nome,
-    required this.funcao,
+    required this.funcionario,
+    required this.onDelete,
   });
 
-  final String nome;
-  final String funcao;
+  final Funcionario funcionario;
+  final Function(Funcionario) onDelete;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Slidable(
-        endActionPane: const ActionPane(
-          motion: ScrollMotion(),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: null,
+              onPressed: (context) => onDelete(funcionario),
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_rounded,
               label: 'Remover',
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
           ],
         ),
@@ -39,10 +40,10 @@ class ListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  nome,
+                  funcionario.nome,
                   style: pTitulo,
                 ),
-                Text(funcao),
+                Text(funcionario.funcao),
               ],
             ),
           ),

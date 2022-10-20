@@ -1,7 +1,10 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/widgets/item_equipamento.dart';
 import 'package:flutter/material.dart';
+
+import '../customs/models/locais.dart';
 
 class Equipamentos extends StatefulWidget {
   const Equipamentos({super.key});
@@ -11,8 +14,6 @@ class Equipamentos extends StatefulWidget {
 }
 
 class _EquipamentosState extends State<Equipamentos> {
-  List<ItemEquipamento> equipamentos = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,15 +33,20 @@ class _EquipamentosState extends State<Equipamentos> {
       body: ListView(
         children: [
           const SizedBox(height: 8.0),
-          for (var i in equipamentos)
+          for (var i in Locais.instance.equipamentos)
             ItemEquipamento(
-              equipamento: i.equipamento,
-              numero: i.numero,
-              descricao: i.descricao,
+              equipamento: i,
+              onDelete: onDelete,
             )
         ],
       ),
     );
+  }
+
+  void onDelete(Equipamento equipamento) {
+    setState(() {
+      Locais.instance.equipamentos.remove(equipamento);
+    });
   }
 
   Future<dynamic> showModal(BuildContext context) {
@@ -111,16 +117,14 @@ class _EquipamentosState extends State<Equipamentos> {
 
                         setState(
                           () {
-                            equipamentos.add(
-                              ItemEquipamento(
-                                equipamento: nomeController.text,
-                                numero: idController.text,
-                                descricao: descricaoController.text,
-                              ),
+                            Equipamento equipamento = Equipamento(
+                              nome: nomeController.text,
+                              descricao: descricaoController.text,
+                              numero: int.parse(idController.text),
                             );
+                            Locais.instance.equipamentos.add(equipamento);
                           },
                         );
-
                         clearAll();
                       },
                       style: ElevatedButton.styleFrom(

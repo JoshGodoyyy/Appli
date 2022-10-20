@@ -1,5 +1,7 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/widgets/entregar_item.dart';
 import 'package:flutter/material.dart';
 
 class Fornecimento extends StatefulWidget {
@@ -9,13 +11,26 @@ class Fornecimento extends StatefulWidget {
   State<Fornecimento> createState() => _FornecimentoState();
 }
 
-const List<String> list = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
-
 class _FornecimentoState extends State<Fornecimento> {
   TextEditingController responsavelController = TextEditingController();
   TextEditingController funcionarioController = TextEditingController();
 
-  String dropDownValue = list.first;
+  List<String> list = [];
+  String? dropDownValue;
+  @override
+  void initState() {
+    super.initState();
+    for (var i in Locais.instance.funcionarios) {
+      list.add(i.nome);
+    }
+    if (list.isEmpty) {
+      list.add('Vazio');
+      dropDownValue = list.first;
+      return;
+    }
+    dropDownValue = list.first;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,53 +43,49 @@ class _FornecimentoState extends State<Fornecimento> {
             'Responsável',
             Icons.person,
           ),
-          Row(
-            children: [
-              Expanded(
-                child: buildText(
-                  funcionarioController,
-                  'Pesquisar',
-                  Icons.search,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(18.0),
-                    backgroundColor: CustomColors.orange,
-                  ),
-                  child: const Icon(Icons.send_sharp),
-                ),
-              )
-            ],
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: pDecoration,
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DropdownButton(
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  value: dropDownValue,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropDownValue = value!;
-                    });
-                  },
-                  isExpanded: true,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Text('Funcionário:'),
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: Container(
+                    decoration: pDecoration,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: DropdownButton(
+                        isExpanded: true,
+                        underline: Container(),
+                        items:
+                            list.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        value: dropDownValue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropDownValue = value!;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
+          for (var i in Locais.instance.itens)
+            EntregarItem(
+              item: i,
+              max: i.quantidade,
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -85,7 +96,7 @@ class _FornecimentoState extends State<Fornecimento> {
                   padding: const EdgeInsets.all(16.0),
                   backgroundColor: CustomColors.orange,
                 ),
-                child: const Text('Finalizar'),
+                child: const Text('Visualizar'),
               ),
             ),
           )

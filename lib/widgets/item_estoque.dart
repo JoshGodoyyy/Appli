@@ -4,15 +4,15 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../customs/utilities/constants.dart';
 
-class ItemEquipamento extends StatelessWidget {
-  const ItemEquipamento({
+class Item extends StatelessWidget {
+  const Item({
     Key? key,
-    required this.equipamento,
+    required this.itemEstoque,
     required this.onDelete,
   }) : super(key: key);
 
-  final Equipamento equipamento;
-  final Function(Equipamento) onDelete;
+  final ItemEstoque itemEstoque;
+  final Function(ItemEstoque) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class ItemEquipamento extends StatelessWidget {
           children: [
             SlidableAction(
               onPressed: (context) {
-                onDelete(equipamento);
+                onDelete(itemEstoque);
               },
               backgroundColor: Colors.red,
               borderRadius: const BorderRadius.all(
@@ -32,7 +32,7 @@ class ItemEquipamento extends StatelessWidget {
               ),
               label: 'Remover',
               icon: Icons.delete_rounded,
-            )
+            ),
           ],
         ),
         child: Container(
@@ -40,12 +40,22 @@ class ItemEquipamento extends StatelessWidget {
           decoration: pDecoration,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(equipamento.nome, style: pTitulo),
-                Text('${equipamento.numero}'),
-                Text(equipamento.descricao),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      itemEstoque.item,
+                      style: pTitulo,
+                    ),
+                    Text(itemEstoque.detalhes),
+                  ],
+                ),
+                Center(
+                  child: Text('${itemEstoque.quantidade}'),
+                ),
               ],
             ),
           ),

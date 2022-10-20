@@ -1,7 +1,10 @@
 import 'package:appli/customs/colors/custom_colors.dart';
+import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+
+import '../../customs/models/locais.dart';
+import '../../widgets/item_estoque.dart';
 
 class Itens extends StatefulWidget {
   const Itens({super.key});
@@ -11,8 +14,6 @@ class Itens extends StatefulWidget {
 }
 
 class _ItensState extends State<Itens> {
-  List<Item> itens = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,11 +21,10 @@ class _ItensState extends State<Itens> {
       body: ListView(
         children: [
           const SizedBox(height: 8.0),
-          for (var i in itens)
+          for (var i in Locais.instance.itens)
             Item(
-              nome: i.nome,
-              detalhes: i.detalhes,
-              quantidade: i.quantidade,
+              itemEstoque: i,
+              onDelete: onDelete,
             )
         ],
       ),
@@ -36,6 +36,12 @@ class _ItensState extends State<Itens> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void onDelete(ItemEstoque item) {
+    setState(() {
+      Locais.instance.itens.remove(item);
+    });
   }
 
   Future<dynamic> showModal(BuildContext context) {
@@ -105,13 +111,12 @@ class _ItensState extends State<Itens> {
                           return;
                         }
                         setState(() {
-                          itens.add(
-                            Item(
-                              nome: itemController.text,
-                              detalhes: detalhesController.text,
-                              quantidade: int.parse(quantidadeController.text),
-                            ),
+                          ItemEstoque itemEstoque = ItemEstoque(
+                            item: itemController.text,
+                            detalhes: detalhesController.text,
+                            quantidade: int.parse(quantidadeController.text),
                           );
+                          Locais.instance.itens.add(itemEstoque);
                         });
 
                         clearAll();
@@ -147,66 +152,6 @@ class _ItensState extends State<Itens> {
             ),
             prefixIcon: Icon(icon),
             hintText: hint,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Item extends StatelessWidget {
-  const Item({
-    Key? key,
-    required this.nome,
-    required this.detalhes,
-    required this.quantidade,
-  }) : super(key: key);
-
-  final String nome, detalhes;
-  final int quantidade;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Slidable(
-        endActionPane: const ActionPane(
-          motion: ScrollMotion(),
-          children: [
-            SlidableAction(
-              onPressed: null,
-              backgroundColor: Colors.red,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10.0),
-              ),
-              label: 'Remover',
-              icon: Icons.delete_rounded,
-            ),
-          ],
-        ),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: pDecoration,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      nome,
-                      style: pTitulo,
-                    ),
-                    Text(detalhes),
-                  ],
-                ),
-                Center(
-                  child: Text('$quantidade'),
-                ),
-              ],
-            ),
           ),
         ),
       ),

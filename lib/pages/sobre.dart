@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../customs/colors/custom_colors.dart';
-import '../customs/enums/tipos.dart';
 import '../customs/utilities/constants.dart';
 import '../widgets/item_button.dart';
-import '../widgets/local.dart';
 
 class Sobre extends StatelessWidget {
   const Sobre({super.key});
@@ -77,11 +75,7 @@ class Sobre extends StatelessWidget {
           SizedBox(height: height),
           Column(
             children: [
-              const Local(
-                titulo: 'Titulo',
-                endereco: 'Endereço',
-                tipo: Tipos.obra,
-              ),
+              //const WidgetLocal(),
               TextButton(
                 onPressed: () {},
                 child: Row(
