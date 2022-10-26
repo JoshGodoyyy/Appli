@@ -1,3 +1,4 @@
+import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -102,11 +103,10 @@ class _LoginState extends State<Login> {
 
                           return;
                         }
+                        Util.usuario = nomeController.text;
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
-                              userName: nomeController.text,
-                            ),
+                            builder: (context) => const HomePage(),
                           ),
                         );
                       },

@@ -1,20 +1,33 @@
 import 'package:appli/customs/colors/custom_colors.dart';
 import 'package:appli/customs/models/data.dart';
+import 'package:appli/customs/models/locais.dart';
+import 'package:appli/customs/models/nova_obra.dart';
+import 'package:appli/pages/home_page.dart';
+import 'package:appli/pages/pages/adicionar_equipamento.dart';
+import 'package:appli/pages/pages/adicionar_ferramenta.dart';
+import 'package:appli/pages/pages/adicionar_funcionario.dart';
+import 'package:appli/pages/pages/widgets/obra_item.dart';
 import 'package:flutter/material.dart';
 
+import '../customs/enums/tipos.dart';
 import '../customs/utilities/constants.dart';
 
-class Obra extends StatefulWidget {
-  const Obra({super.key, required this.local});
+class NovaObra extends StatefulWidget {
+  const NovaObra({super.key, required this.local});
 
   final Local local;
 
   @override
-  State<Obra> createState() => _ObraState();
+  State<NovaObra> createState() => _NovaObraState();
 }
 
-class _ObraState extends State<Obra> {
+class _NovaObraState extends State<NovaObra> {
   TextEditingController enderecoController = TextEditingController();
+  Tipos? tipos;
+
+  List<Ferramenta> ferramentas = [];
+  List<Equipamento> equipamentos = [];
+  List<Funcionario> funcionarios = [];
 
   @override
   void initState() {
@@ -32,22 +45,180 @@ class _ObraState extends State<Obra> {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          for (var i in CadastrarNovaObra.instance.ferramentas) {
+            ferramentas.add(i);
+          }
+
+          for (var i in CadastrarNovaObra.instance.equipamentos) {
+            equipamentos.add(i);
+          }
+
+          for (var i in CadastrarNovaObra.instance.funcionarios) {
+            funcionarios.add(i);
+          }
+
+          Local local = Local(
+            tipos,
+            titulo: widget.local.titulo,
+            endereco: widget.local.endereco,
+          );
+
+          Obra obra = Obra(
+            local: local,
+            ferramentas: ferramentas,
+            equipamentos: equipamentos,
+            funcionarios: funcionarios,
+          );
+
+          Locais.instance.obras.add(obra);
+
+          CadastrarNovaObra.instance.ferramentas.clear();
+          CadastrarNovaObra.instance.equipamentos.clear();
+          CadastrarNovaObra.instance.funcionarios.clear();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Local cadastrado com sucesso'),
+            ),
+          );
+
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomePage()));
+        },
         backgroundColor: CustomColors.deepPurple,
         child: const Icon(Icons.save),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          const Center(
-            child: Text(
-              'Cadastrar nova obra',
-              style: pTitulo,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            const Center(
+              child: Text(
+                'Cadastrar nova obra',
+                style: pTitulo,
+              ),
             ),
+            const SizedBox(height: 8.0),
+            buildTextField(enderecoController, 'Endereço', Icons.pin_drop),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Tipo',
+                    style: pTitulo,
+                  ),
+                  Row(
+                    children: [
+                      Radio<Tipos>(
+                        value: Tipos.empresa,
+                        groupValue: tipos,
+                        onChanged: (Tipos? value) =>
+                            setState(() => tipos = value),
+                      ),
+                      const Text('Empresa'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio<Tipos>(
+                        value: Tipos.obra,
+                        groupValue: tipos,
+                        onChanged: (Tipos? value) =>
+                            setState(() => tipos = value),
+                      ),
+                      const Text('Obra'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            buildButton(
+              context,
+              'Adicionar ferramenta',
+              const AdicionarFerramenta(),
+            ),
+            for (var i in CadastrarNovaObra.instance.ferramentas)
+              ObraItem(
+                nome: i.nome,
+                descricao: i.detalhes,
+              ),
+            buildButton(
+              context,
+              'Adicionar equipamento',
+              const AdicionarEquipamento(),
+            ),
+            for (var i in CadastrarNovaObra.instance.equipamentos)
+              ObraItem(
+                nome: i.nome,
+                descricao: i.descricao,
+              ),
+            buildButton(
+              context,
+              'Selecionar funcionários',
+              const AdicionarFuncionario(),
+            ),
+            for (var i in CadastrarNovaObra.instance.funcionarios)
+              ObraItem(
+                nome: i.nome,
+                descricao: i.funcao,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding buildButton(BuildContext context, String text, Widget appWidget) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Theme.of(context).backgroundColor,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
+                ),
+              ),
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 2,
+                        child: appWidget,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: CustomColors.deepPurple,
+            padding: const EdgeInsets.all(16.0),
           ),
-          const SizedBox(height: 8.0),
-          buildTextField(enderecoController, 'Endereço', Icons.pin_drop),
-        ],
+          child: Text(text),
+        ),
       ),
     );
   }

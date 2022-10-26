@@ -1,5 +1,4 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/enums/tipos.dart';
 import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/pages/equipamentos.dart';
@@ -17,14 +16,22 @@ import '../widgets/item_button.dart';
 import '../widgets/local.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userName});
-  final String userName;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    for (var i in Locais.instance.obras) {
+      WidgetLocal(local: i.local);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +78,7 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
-                'Olá, ${widget.userName}',
+                'Olá, ${Util.usuario}',
                 style: const TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w500,
@@ -169,7 +176,8 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 4.0),
 
-                for (var i in Locais.instance.locais) WidgetLocal(local: i),
+                for (var i in Locais.instance.obras)
+                  WidgetLocal(local: i.local),
 
                 TextButton(
                   onPressed: () {
@@ -262,13 +270,13 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pop(context);
 
                       Local local = Local(
+                        null,
                         titulo: tituloController.text,
                         endereco: enderecoController.text,
-                        tipo: Tipos.obra,
                       );
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => Obra(local: local),
+                          builder: (context) => NovaObra(local: local),
                         ),
                       );
 
