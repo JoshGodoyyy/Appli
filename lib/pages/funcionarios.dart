@@ -1,9 +1,12 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/data.dart';
-import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/widgets/funcionario.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+
+import '../firebase_options.dart';
 
 class Funcionarios extends StatefulWidget {
   const Funcionarios({super.key});
@@ -13,6 +16,13 @@ class Funcionarios extends StatefulWidget {
 }
 
 class _FuncionariosState extends State<Funcionarios> {
+  final databaseReference = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
+  ).ref();
+
+  Query data = FirebaseDatabase.instance.ref().child('funcionarios');
+
   @override
   Widget build(BuildContext context) {
     TextEditingController nomeController = TextEditingController();
@@ -25,71 +35,96 @@ class _FuncionariosState extends State<Funcionarios> {
       ),
       extendBody: true,
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        children: [
-          buildText(
-            nomeController,
-            'Nome',
-            Icons.person,
-          ),
-          buildText(
-            funcaoController,
-            'Função',
-            Icons.home_repair_service_rounded,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (nomeController.text == '' ||
-                      funcaoController.text == '') {
-                    showSnack('Você precisa digitar um nome e função');
-                    return;
-                  }
-
-                  setState(() {
-                    Funcionario funcionario = Funcionario(
-                        nome: nomeController.text,
-                        funcao: funcaoController.text);
-                    Locais.instance.funcionarios.add(funcionario);
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(16.0),
-                  backgroundColor: CustomColors.deepPurple,
-                ),
-                child: const Text(
-                  'Adicionar',
-                ),
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Divider(),
-          ),
-          Expanded(
-            child: ListView(
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Ocorreu um erro'),
+            );
+          }
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Column(
               children: [
-                for (var i in Locais.instance.funcionarios)
-                  WidgetFuncionario(
-                    funcionario: i,
-                    onDelete: onDelete,
-                  )
+                buildText(
+                  nomeController,
+                  'Nome',
+                  Icons.person,
+                ),
+                buildText(
+                  funcaoController,
+                  'Função',
+                  Icons.home_repair_service_rounded,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (nomeController.text == '' ||
+                            funcaoController.text == '') {
+                          showSnack('Você precisa digitar um nome e função');
+                          return;
+                        }
+                        databaseReference
+                            .child('funcionarios')
+                            .child(nomeController.text)
+                            .set({
+                          'nome': nomeController.text,
+                          'funcao': funcaoController.text
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
+                        backgroundColor: CustomColors.deepPurple,
+                      ),
+                      child: const Text(
+                        'Adicionar',
+                      ),
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Divider(),
+                ),
+                Expanded(
+                  child: FirebaseAnimatedList(
+                    query: data,
+                    itemBuilder: (
+                      BuildContext context,
+                      DataSnapshot snapshot,
+                      Animation<double> animation,
+                      int index,
+                    ) {
+                      Map funcionarios = snapshot.value as Map;
+                      funcionarios['key'] = snapshot.key;
+                      return WidgetFuncionario(
+                          funcionario: funcionarios, onDelete: onDelete);
+                    },
+                  ),
+                ),
               ],
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
     );
   }
 
-  void onDelete(Funcionario funcionario) {
-    setState(() {
-      Locais.instance.funcionarios.remove(funcionario);
-    });
+  getData() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  void onDelete(Map) {
+    setState(() {});
   }
 
   Padding buildText(

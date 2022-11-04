@@ -1,10 +1,11 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/firebase_options.dart';
 import 'package:appli/widgets/item_equipamento.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-
-import '../customs/models/locais.dart';
 
 class Equipamentos extends StatefulWidget {
   const Equipamentos({super.key});
@@ -14,39 +15,60 @@ class Equipamentos extends StatefulWidget {
 }
 
 class _EquipamentosState extends State<Equipamentos> {
+  final databaseReference = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
+  ).ref();
+
+  Query data = FirebaseDatabase.instance.ref().child('equipamentos');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Equipamentos'),
-        centerTitle: true,
-        backgroundColor: CustomColors.pink,
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModal(context);
-        },
-        backgroundColor: CustomColors.pink,
-        child: const Icon(Icons.add),
-      ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 8.0),
-          for (var i in Locais.instance.equipamentos)
-            ItemEquipamento(
-              equipamento: i,
-              onDelete: onDelete,
-            )
-        ],
-      ),
+        appBar: AppBar(
+          title: const Text('equipamentos'),
+          centerTitle: true,
+          backgroundColor: CustomColors.pink,
+        ),
+        backgroundColor: Theme.of(context).backgroundColor,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showModal(context);
+          },
+          backgroundColor: CustomColors.pink,
+          child: const Icon(Icons.add),
+        ),
+        body: FutureBuilder(
+          future: getData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return FirebaseAnimatedList(
+                query: data,
+                itemBuilder: ((context, snapshot, animation, index) {
+                  Map equipamentos = snapshot.value as Map;
+                  equipamentos['key'] = snapshot.key;
+
+                  return WidgetEquipamento(
+                    equipamento: equipamentos,
+                    onDelete: onDelete,
+                  );
+                }),
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
+  }
+
+  getData() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
     );
   }
 
-  void onDelete(Equipamento equipamento) {
-    setState(() {
-      Locais.instance.equipamentos.remove(equipamento);
-    });
+  void onDelete(Map) {
+    setState(() {});
   }
 
   Future<dynamic> showModal(BuildContext context) {
@@ -115,16 +137,15 @@ class _EquipamentosState extends State<Equipamentos> {
                           return;
                         }
 
-                        setState(
-                          () {
-                            Equipamento equipamento = Equipamento(
-                              nome: nomeController.text,
-                              descricao: descricaoController.text,
-                              numero: int.parse(idController.text),
-                            );
-                            Locais.instance.equipamentos.add(equipamento);
-                          },
-                        );
+                        databaseReference
+                            .child('equipamentos')
+                            .child(nomeController.text)
+                            .set({
+                          'nome': nomeController.text,
+                          'id': idController.text,
+                          'descricao': descricaoController.text
+                        });
+
                         clearAll();
                       },
                       style: ElevatedButton.styleFrom(

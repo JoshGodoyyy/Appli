@@ -1,4 +1,3 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -11,8 +10,8 @@ class Item extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
-  final ItemEstoque itemEstoque;
-  final Function(ItemEstoque) onDelete;
+  final Map itemEstoque;
+  final Function(Map) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class Item extends StatelessWidget {
           children: [
             SlidableAction(
               onPressed: (context) {
-                onDelete(itemEstoque);
+                onDelete(itemEstoque['']);
               },
               backgroundColor: Colors.red,
               borderRadius: const BorderRadius.all(
@@ -47,14 +46,14 @@ class Item extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      itemEstoque.item,
+                      itemEstoque['item'],
                       style: pTitulo,
                     ),
-                    Text(itemEstoque.detalhes),
+                    Text(itemEstoque['detalhes']),
                   ],
                 ),
                 Center(
-                  child: Text('${itemEstoque.quantidade}'),
+                  child: Text(itemEstoque['quantidade']),
                 ),
               ],
             ),

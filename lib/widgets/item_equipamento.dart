@@ -1,18 +1,17 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../customs/utilities/constants.dart';
 
-class ItemEquipamento extends StatelessWidget {
-  const ItemEquipamento({
+class WidgetEquipamento extends StatelessWidget {
+  const WidgetEquipamento({
     Key? key,
     required this.equipamento,
     required this.onDelete,
   }) : super(key: key);
 
-  final Equipamento equipamento;
-  final Function(Equipamento) onDelete;
+  final Map equipamento;
+  final Function(Map) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class ItemEquipamento extends StatelessWidget {
           children: [
             SlidableAction(
               onPressed: (context) {
-                onDelete(equipamento);
+                onDelete(equipamento['']);
               },
               backgroundColor: Colors.red,
               borderRadius: const BorderRadius.all(
@@ -43,9 +42,9 @@ class ItemEquipamento extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(equipamento.nome, style: pTitulo),
-                Text('${equipamento.numero}'),
-                Text(equipamento.descricao),
+                Text(equipamento['nome'], style: pTitulo),
+                Text(equipamento['descricao']),
+                Text(equipamento['id']),
               ],
             ),
           ),

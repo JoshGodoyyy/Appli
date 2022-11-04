@@ -1,8 +1,6 @@
 import 'package:appli/customs/models/data.dart';
-import 'package:appli/customs/models/nova_obra.dart';
 import 'package:flutter/material.dart';
 
-import '../../customs/models/locais.dart';
 import '../../customs/utilities/constants.dart';
 
 class AdicionarEquipamento extends StatefulWidget {
@@ -36,7 +34,6 @@ class AdicionarItem extends StatelessWidget {
           'Selecionar equipamento',
           style: pTitulo,
         ),
-        for (var i in Locais.instance.equipamentos) Item(equipamento: i),
       ],
     );
   }
@@ -73,13 +70,6 @@ class _ItemState extends State<Item> {
                   setState(
                     () {
                       state = value!;
-                      if (state == false) {
-                        CadastrarNovaObra.instance.equipamentos
-                            .remove(widget.equipamento);
-                      } else {
-                        CadastrarNovaObra.instance.equipamentos
-                            .add(widget.equipamento);
-                      }
                     },
                   );
                 },

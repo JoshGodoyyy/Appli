@@ -1,10 +1,11 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/firebase_options.dart';
 import 'package:appli/widgets/ferramenta.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-
-import '../customs/models/data.dart';
 
 class Ferramentas extends StatefulWidget {
   const Ferramentas({super.key});
@@ -14,6 +15,13 @@ class Ferramentas extends StatefulWidget {
 }
 
 class _FerramentasState extends State<Ferramentas> {
+  final databaseReference = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
+  ).ref();
+
+  Query data = FirebaseDatabase.instance.ref().child('ferramentas');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,19 +38,35 @@ class _FerramentasState extends State<Ferramentas> {
         backgroundColor: CustomColors.deepBlue,
         child: const Icon(Icons.add),
       ),
-      body: ListView(
-        children: [
-          for (var i in Locais.instance.ferramentas)
-            WidgetFerramenta(ferramenta: i, onDelete: onDelete)
-        ],
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return FirebaseAnimatedList(
+              query: data,
+              itemBuilder: (context, snapshot, animation, index) {
+                Map ferramentas = snapshot.value as Map;
+                ferramentas['key'] = snapshot.key;
+                return WidgetFerramenta(
+                    ferramenta: ferramentas, onDelete: onDelete);
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
 
-  void onDelete(Ferramenta ferramenta) {
-    setState(() {
-      Locais.instance.ferramentas.remove(ferramenta);
-    });
+  void onDelete(Map) {
+    setState(() {});
+  }
+
+  getData() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   Future<dynamic> showModal(BuildContext context) {
@@ -110,13 +134,14 @@ class _FerramentasState extends State<Ferramentas> {
                             );
                             return;
                           }
-                          setState(() {
-                            Ferramenta ferramenta = Ferramenta(
-                              nome: ferramentaController.text,
-                              detalhes: detalhesController.text,
-                              quantidade: int.parse(quantidadeController.text),
-                            );
-                            Locais.instance.ferramentas.add(ferramenta);
+
+                          databaseReference
+                              .child('ferramentas')
+                              .child(ferramentaController.text)
+                              .set({
+                            'ferramenta': ferramentaController.text,
+                            'detalhes': detalhesController.text,
+                            'quantidade': quantidadeController.text
                           });
 
                           clearAll();

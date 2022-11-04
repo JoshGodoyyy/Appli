@@ -1,4 +1,3 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -10,8 +9,8 @@ class WidgetFerramenta extends StatelessWidget {
     required this.onDelete,
   });
 
-  final Ferramenta ferramenta;
-  final Function(Ferramenta) onDelete;
+  final Map ferramenta;
+  final Function(Map) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +21,7 @@ class WidgetFerramenta extends StatelessWidget {
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) {
-                onDelete(ferramenta);
-              },
+              onPressed: (context) => onDelete(ferramenta['']),
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_rounded,
@@ -45,13 +42,13 @@ class WidgetFerramenta extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ferramenta.nome,
+                      ferramenta['ferramenta'],
                       style: pTitulo,
                     ),
-                    Text(ferramenta.detalhes),
+                    Text(ferramenta['detalhes']),
                   ],
                 ),
-                Text('${ferramenta.quantidade}'),
+                Text(ferramenta['quantidade']),
               ],
             ),
           ),

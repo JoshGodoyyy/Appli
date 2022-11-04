@@ -2,13 +2,14 @@ import 'package:appli/customs/enums/tipos.dart';
 
 class Util {
   static String? usuario;
+  static String? status;
 }
 
 class Obra {
   Local local;
   List<Ferramenta> ferramentas;
   List<Equipamento> equipamentos;
-  List<Funcionario> funcionarios;
+  List<Map> funcionarios;
 
   Obra({
     required this.local,
@@ -47,18 +48,6 @@ class Ferramenta {
   }
 }
 
-class ItemEstoque {
-  String item;
-  String detalhes;
-  int quantidade;
-
-  ItemEstoque({
-    required this.item,
-    required this.detalhes,
-    required this.quantidade,
-  });
-}
-
 class Equipamento {
   String nome, descricao;
   int numero;
@@ -67,14 +56,5 @@ class Equipamento {
     required this.nome,
     required this.descricao,
     required this.numero,
-  });
-}
-
-class Funcionario {
-  String nome, funcao;
-
-  Funcionario({
-    required this.nome,
-    required this.funcao,
   });
 }

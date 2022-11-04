@@ -1,4 +1,3 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 
 import '../customs/colors/custom_colors.dart';
@@ -8,7 +7,7 @@ class EntregarItem extends StatefulWidget {
   const EntregarItem({Key? key, required this.item, required this.max})
       : super(key: key);
 
-  final ItemEstoque item;
+  final Map item;
   final int max;
 
   @override
@@ -36,7 +35,7 @@ class _EntregarItemState extends State<EntregarItem> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.item.item),
+              Text(widget.item['item']),
               Row(
                 children: [
                   IconButton(

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="wgcode.appli">
+    package="com.wgcode.appli">
    <application
         android:label="Appli"
         android:name="${applicationName}"

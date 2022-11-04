@@ -1,4 +1,4 @@
-package wgcode.appli
+package com.wgcode.appli
 
 import io.flutter.embedding.android.FlutterActivity
 

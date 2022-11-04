@@ -1,7 +1,5 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
-import 'package:appli/widgets/entregar_item.dart';
 import 'package:flutter/material.dart';
 
 class Fornecimento extends StatefulWidget {
@@ -20,9 +18,7 @@ class _FornecimentoState extends State<Fornecimento> {
   @override
   void initState() {
     super.initState();
-    for (var i in Locais.instance.funcionarios) {
-      list.add(i.nome);
-    }
+
     if (list.isEmpty) {
       list.add('Vazio');
       dropDownValue = list.first;
@@ -81,11 +77,6 @@ class _FornecimentoState extends State<Fornecimento> {
               ],
             ),
           ),
-          for (var i in Locais.instance.itens)
-            EntregarItem(
-              item: i,
-              max: i.quantidade,
-            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(

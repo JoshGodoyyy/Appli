@@ -1,4 +1,3 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -11,8 +10,8 @@ class WidgetFuncionario extends StatelessWidget {
     required this.onDelete,
   });
 
-  final Funcionario funcionario;
-  final Function(Funcionario) onDelete;
+  final Map funcionario;
+  final Function(Map) onDelete;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +21,7 @@ class WidgetFuncionario extends StatelessWidget {
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) => onDelete(funcionario),
+              onPressed: (context) => onDelete(funcionario['']),
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_rounded,
@@ -40,10 +39,10 @@ class WidgetFuncionario extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  funcionario.nome,
+                  funcionario['nome'],
                   style: pTitulo,
                 ),
-                Text(funcionario.funcao),
+                Text(funcionario['funcao']),
               ],
             ),
           ),

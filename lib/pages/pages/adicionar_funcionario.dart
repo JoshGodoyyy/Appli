@@ -1,8 +1,5 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:flutter/material.dart';
 
-import '../../customs/models/locais.dart';
-import '../../customs/models/nova_obra.dart';
 import '../../customs/utilities/constants.dart';
 
 class AdicionarFuncionario extends StatelessWidget {
@@ -31,7 +28,6 @@ class AdicionarItem extends StatelessWidget {
           'Selecionar funcionários',
           style: pTitulo,
         ),
-        for (var i in Locais.instance.funcionarios) Item(funcionario: i),
       ],
     );
   }
@@ -43,7 +39,7 @@ class Item extends StatefulWidget {
     required this.funcionario,
   }) : super(key: key);
 
-  final Funcionario funcionario;
+  final Map funcionario;
 
   @override
   State<Item> createState() => _ItemState();
@@ -68,13 +64,6 @@ class _ItemState extends State<Item> {
                   setState(
                     () {
                       state = value!;
-                      if (state == false) {
-                        CadastrarNovaObra.instance.funcionarios
-                            .remove(widget.funcionario);
-                      } else {
-                        CadastrarNovaObra.instance.funcionarios
-                            .add(widget.funcionario);
-                      }
                     },
                   );
                 },
@@ -82,8 +71,8 @@ class _ItemState extends State<Item> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.funcionario.nome),
-                  Text(widget.funcionario.funcao),
+                  Text(widget.funcionario['nome']),
+                  Text(widget.funcionario['funcao']),
                 ],
               ),
             ],

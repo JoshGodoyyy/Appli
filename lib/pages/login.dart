@@ -1,6 +1,5 @@
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
-import 'package:appli/pages/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -11,7 +10,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController nomeController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController senhaController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    senhaController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,69 +53,43 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 60.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Nome',
-                          style: pFonte,
-                        ),
-                        const SizedBox(height: 16.0),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF6CA8F1),
-                            borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6.0,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: nomeController,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                              ),
-                              hintText: 'Seu nome',
-                              hintStyle: TextStyle(
-                                color: Colors.white54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'E-mail',
+                        style: pFonte,
+                      ),
+                      const SizedBox(height: 8.0),
+                      buildText('email@email.com', emailController, false),
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Senha',
+                        style: pFonte,
+                      ),
+                      const SizedBox(height: 8.0),
+                      buildText('Senha', senhaController, true),
+                    ],
                   ),
                   const SizedBox(height: 45.0),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 25.0),
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (nomeController.text == '') {
+                      onPressed: () async {
+                        if (emailController.text.isEmpty ||
+                            senhaController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Você precisa digitar um nome'),
+                              content:
+                                  Text('Você deve preencher todos os campos'),
                             ),
                           );
-
                           return;
                         }
-                        Util.usuario = nomeController.text;
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: emailController.text.trim(),
+                          password: senhaController.text.trim(),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -128,6 +110,40 @@ class _LoginState extends State<Login> {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container buildText(String name, controller, bool isObscure) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF6CA8F1),
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6.0,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        style: const TextStyle(color: Colors.white),
+        obscureText: isObscure,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          prefixIcon: const Icon(
+            Icons.person,
+            color: Colors.white,
+          ),
+          hintText: name,
+          hintStyle: const TextStyle(
+            color: Colors.white54,
           ),
         ),
       ),

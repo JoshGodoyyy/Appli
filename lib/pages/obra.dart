@@ -1,12 +1,10 @@
 import 'package:appli/customs/colors/custom_colors.dart';
 import 'package:appli/customs/models/data.dart';
-import 'package:appli/customs/models/locais.dart';
-import 'package:appli/customs/models/nova_obra.dart';
-import 'package:appli/pages/home_page.dart';
 import 'package:appli/pages/pages/adicionar_equipamento.dart';
 import 'package:appli/pages/pages/adicionar_ferramenta.dart';
 import 'package:appli/pages/pages/adicionar_funcionario.dart';
-import 'package:appli/pages/pages/widgets/obra_item.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '../customs/enums/tipos.dart';
@@ -25,9 +23,10 @@ class _NovaObraState extends State<NovaObra> {
   TextEditingController enderecoController = TextEditingController();
   Tipos? tipos;
 
-  List<Ferramenta> ferramentas = [];
-  List<Equipamento> equipamentos = [];
-  List<Funcionario> funcionarios = [];
+  final databaseReference = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
+  ).ref();
 
   @override
   void initState() {
@@ -46,45 +45,21 @@ class _NovaObraState extends State<NovaObra> {
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          for (var i in CadastrarNovaObra.instance.ferramentas) {
-            ferramentas.add(i);
-          }
-
-          for (var i in CadastrarNovaObra.instance.equipamentos) {
-            equipamentos.add(i);
-          }
-
-          for (var i in CadastrarNovaObra.instance.funcionarios) {
-            funcionarios.add(i);
-          }
-
-          Local local = Local(
-            tipos,
-            titulo: widget.local.titulo,
-            endereco: widget.local.endereco,
-          );
-
-          Obra obra = Obra(
-            local: local,
-            ferramentas: ferramentas,
-            equipamentos: equipamentos,
-            funcionarios: funcionarios,
-          );
-
-          Locais.instance.obras.add(obra);
-
-          CadastrarNovaObra.instance.ferramentas.clear();
-          CadastrarNovaObra.instance.equipamentos.clear();
-          CadastrarNovaObra.instance.funcionarios.clear();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Local cadastrado com sucesso'),
-            ),
-          );
-
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomePage()));
+          databaseReference.child('obra').child(widget.local.titulo)
+            ..child('ferramentas').set({
+              'ferramenta': 'Ferramenta',
+              'detalhes': 'Detalhes',
+              'quantidade': 10
+            })
+            ..child('equipamentos').set({
+              'equipamento': 'Equipamento',
+              'numero': 123456,
+              'detalhes': 'Detalhes',
+            })
+            ..child('funcionarios').set({
+              'nome': 'Nome',
+              'funcao': 'Funcao',
+            });
         },
         backgroundColor: CustomColors.deepPurple,
         child: const Icon(Icons.save),
@@ -139,31 +114,16 @@ class _NovaObraState extends State<NovaObra> {
               'Adicionar ferramenta',
               const AdicionarFerramenta(),
             ),
-            for (var i in CadastrarNovaObra.instance.ferramentas)
-              ObraItem(
-                nome: i.nome,
-                descricao: i.detalhes,
-              ),
             buildButton(
               context,
               'Adicionar equipamento',
               const AdicionarEquipamento(),
             ),
-            for (var i in CadastrarNovaObra.instance.equipamentos)
-              ObraItem(
-                nome: i.nome,
-                descricao: i.descricao,
-              ),
             buildButton(
               context,
               'Selecionar funcionários',
               const AdicionarFuncionario(),
             ),
-            for (var i in CadastrarNovaObra.instance.funcionarios)
-              ObraItem(
-                nome: i.nome,
-                descricao: i.funcao,
-              ),
           ],
         ),
       ),

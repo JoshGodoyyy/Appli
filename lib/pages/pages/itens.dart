@@ -1,9 +1,11 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-import '../../customs/models/locais.dart';
 import '../../widgets/item_estoque.dart';
 
 class Itens extends StatefulWidget {
@@ -14,19 +16,37 @@ class Itens extends StatefulWidget {
 }
 
 class _ItensState extends State<Itens> {
+  final databaseReference = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
+  ).ref();
+
+  Query data = FirebaseDatabase.instance.ref().child('epis');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: ListView(
-        children: [
-          const SizedBox(height: 8.0),
-          for (var i in Locais.instance.itens)
-            Item(
-              itemEstoque: i,
-              onDelete: onDelete,
-            )
-        ],
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return FirebaseAnimatedList(
+              query: data,
+              itemBuilder: ((context, snapshot, animation, index) {
+                Map epis = snapshot.value as Map;
+                epis['key'] = snapshot.key;
+
+                return Item(
+                  itemEstoque: epis,
+                  onDelete: onDelete,
+                );
+              }),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -38,10 +58,14 @@ class _ItensState extends State<Itens> {
     );
   }
 
-  void onDelete(ItemEstoque item) {
-    setState(() {
-      Locais.instance.itens.remove(item);
-    });
+  void onDelete(Map) {
+    setState(() {});
+  }
+
+  getData() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   Future<dynamic> showModal(BuildContext context) {
@@ -110,13 +134,14 @@ class _ItensState extends State<Itens> {
 
                           return;
                         }
-                        setState(() {
-                          ItemEstoque itemEstoque = ItemEstoque(
-                            item: itemController.text,
-                            detalhes: detalhesController.text,
-                            quantidade: int.parse(quantidadeController.text),
-                          );
-                          Locais.instance.itens.add(itemEstoque);
+
+                        databaseReference
+                            .child('epis')
+                            .child(itemController.text)
+                            .set({
+                          'item': itemController.text,
+                          'detalhes': detalhesController.text,
+                          'quantidade': quantidadeController.text
                         });
 
                         clearAll();

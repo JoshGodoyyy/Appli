@@ -1,19 +1,20 @@
+import 'dart:async';
+import 'dart:developer' as developer;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/locais.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/pages/equipamentos.dart';
 import 'package:appli/pages/estoque.dart';
 import 'package:appli/pages/ferramentas.dart';
 import 'package:appli/pages/funcionarios.dart';
-import 'package:appli/pages/login.dart';
 import 'package:appli/pages/obra.dart';
 import 'package:appli/pages/sobre.dart';
-import 'package:flutter/material.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/services.dart';
 import '../customs/models/data.dart';
 import '../widgets/horizontal_calendar.dart';
 import '../widgets/item_button.dart';
-import '../widgets/local.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,13 +24,68 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController tituloController = TextEditingController();
+  TextEditingController enderecoController = TextEditingController();
+
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  void clearAll() {
+    tituloController.clear();
+    enderecoController.clear();
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    for (var i in Locais.instance.obras) {
-      WidgetLocal(local: i.local);
+
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      developer.log('Couldn\'t check connectivity status', error: e);
+      return;
     }
+
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() => _connectionStatus = result);
+  }
+
+  String conexao() {
+    switch (_connectionStatus) {
+      case ConnectivityResult.wifi:
+      case ConnectivityResult.mobile:
+        Util.status = 'Conectado';
+        break;
+      case ConnectivityResult.none:
+        Util.status = 'Desconectado';
+        break;
+      default:
+        Util.status = _connectionStatus.toString();
+        break;
+    }
+    return Util.status!;
   }
 
   @override
@@ -43,11 +99,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const Login(),
-              ),
-            ),
+            onPressed: () => FirebaseAuth.instance.signOut(),
           ),
           IconButton(
             onPressed: () {
@@ -88,7 +140,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: 8.0),
 
           Expanded(
             child: ListView(
@@ -176,12 +228,100 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 4.0),
 
-                for (var i in Locais.instance.obras)
-                  WidgetLocal(local: i.local),
-
                 TextButton(
                   onPressed: () {
-                    bottomSheet(context);
+                    showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                        ),
+                      ),
+                      backgroundColor: const Color(0xFFe2e2e2),
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Center(
+                                  child: Text(
+                                    'Adicionar Local',
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
+                                buildTextField(
+                                  tituloController,
+                                  'Titulo',
+                                  Icons.text_fields_rounded,
+                                ),
+                                const SizedBox(height: 16.0),
+                                buildTextField(
+                                  enderecoController,
+                                  'Endereco',
+                                  Icons.pin_drop_rounded,
+                                ),
+                                const SizedBox(height: 16.0),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (tituloController.text == '' ||
+                                          enderecoController.text == '') {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Você precisa preencher todos os campos'),
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      Navigator.pop(context);
+
+                                      Local local = Local(
+                                        null,
+                                        titulo: tituloController.text,
+                                        endereco: enderecoController.text,
+                                      );
+                                      Navigator.of(context)
+                                          .push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NovaObra(local: local),
+                                            ),
+                                          )
+                                          .then(
+                                            (_) => setState(
+                                              () {},
+                                            ),
+                                          );
+
+                                      clearAll();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: CustomColors.deepPurple,
+                                      padding: const EdgeInsets.all(16.0),
+                                    ),
+                                    child: const Text('Adicionar'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -197,103 +337,22 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
 
-  Future<dynamic> bottomSheet(BuildContext context) {
-    TextEditingController tituloController = TextEditingController();
-    TextEditingController enderecoController = TextEditingController();
-
-    void clearAll() {
-      tituloController.clear();
-      enderecoController.clear();
-    }
-
-    return showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(10.0),
-        ),
-      ),
-      backgroundColor: const Color(0xFFe2e2e2),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Center(
-                  child: Text(
-                    'Adicionar Local',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+          Visibility(
+            visible: conexao() == 'Conectado' ? false : true,
+            child: Container(
+              color: conexao() != 'Conectado' ? Colors.red : null,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  conexao(),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20.0),
-                buildTextField(
-                  tituloController,
-                  'Titulo',
-                  Icons.text_fields_rounded,
-                ),
-                const SizedBox(height: 16.0),
-                buildTextField(
-                  enderecoController,
-                  'Endereco',
-                  Icons.pin_drop_rounded,
-                ),
-                const SizedBox(height: 16.0),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (tituloController.text == '' ||
-                          enderecoController.text == '') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Você precisa preencher todos os campos'),
-                          ),
-                        );
-                        return;
-                      }
-
-                      Navigator.pop(context);
-
-                      Local local = Local(
-                        null,
-                        titulo: tituloController.text,
-                        endereco: enderecoController.text,
-                      );
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => NovaObra(local: local),
-                        ),
-                      );
-
-                      clearAll();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.deepPurple,
-                      padding: const EdgeInsets.all(16.0),
-                    ),
-                    child: const Text('Adicionar'),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
