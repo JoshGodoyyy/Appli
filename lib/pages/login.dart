@@ -43,13 +43,17 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 60.0),
@@ -71,9 +75,26 @@ class _LoginState extends State<Login> {
                       buildText('Senha', senhaController, true),
                     ],
                   ),
-                  const SizedBox(height: 45.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Esqueceu a senha?',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Cadastre-se',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
                       onPressed: () async {
@@ -87,10 +108,55 @@ class _LoginState extends State<Login> {
                           );
                           return;
                         }
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: emailController.text.trim(),
-                          password: senhaController.text.trim(),
-                        );
+                        try {
+                          await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: senhaController.text.trim(),
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString(),
+                                ),
+                              ),
+                            );
+                          } else if (e.code == 'email-already-in-use') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString(),
+                                ),
+                              ),
+                            );
+                          } else if (e.code == 'user-not-found') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString(),
+                                ),
+                              ),
+                            );
+                          } else if (e.code == 'wrong-password') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString(),
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.toString(),
+                              ),
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(24.0),

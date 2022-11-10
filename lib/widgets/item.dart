@@ -4,15 +4,15 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../customs/models/model.dart';
 import '../customs/utilities/constants.dart';
 
-class ItemEquipamentoLista extends StatelessWidget {
-  const ItemEquipamentoLista({
+class Item extends StatelessWidget {
+  const Item({
     Key? key,
     required this.i,
     required this.onDelete,
   }) : super(key: key);
 
-  final Equipamento i;
-  final Function(Equipamento) onDelete;
+  final Ferramenta i;
+  final Function(Ferramenta) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +39,20 @@ class ItemEquipamentoLista extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  i.equipamento,
-                  style: pTitulo,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      i.ferramenta,
+                      style: pTitulo,
+                    ),
+                    Text(i.detalhes),
+                  ],
                 ),
-                Text(i.detalhes),
+                const Spacer(),
+                Text('x${i.quantidade.toString()} unid.'),
               ],
             ),
           ),

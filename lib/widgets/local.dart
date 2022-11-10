@@ -1,11 +1,9 @@
-import 'package:appli/customs/enums/tipos.dart';
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class WidgetLocal extends StatelessWidget {
-  const WidgetLocal({super.key, required this.local});
-  final Local local;
+  const WidgetLocal({super.key, required this.obra});
+  final Map obra;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +22,9 @@ class WidgetLocal extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              print(obra);
+            },
             borderRadius: const BorderRadius.all(
               Radius.circular(20.0),
             ),
@@ -37,7 +37,7 @@ class WidgetLocal extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(
-                      local.tipo == Tipos.empresa
+                      obra['dados']['tipo'] == 'Empresa'
                           ? Icons.business_rounded
                           : Icons.construction,
                       color: Colors.black54,
@@ -47,7 +47,7 @@ class WidgetLocal extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          local.titulo,
+                          obra['dados']['obra'],
                           style: const TextStyle(
                             fontSize: 18.0,
                           ),
@@ -56,7 +56,7 @@ class WidgetLocal extends StatelessWidget {
                           height: 8.0,
                         ),
                         Text(
-                          local.endereco,
+                          obra['dados']['endereco'],
                           style: const TextStyle(
                             fontSize: 14.0,
                           ),

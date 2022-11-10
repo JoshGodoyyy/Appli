@@ -137,7 +137,8 @@ class _FerramentasState extends State<Ferramentas> {
 
                           databaseReference
                               .child('ferramentas')
-                              .child(ferramentaController.text)
+                              .child(
+                                  '${ferramentaController.text}_${detalhesController.text}')
                               .set({
                             'ferramenta': ferramentaController.text,
                             'detalhes': detalhesController.text,

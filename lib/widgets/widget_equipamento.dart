@@ -1,52 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../customs/models/model.dart';
 import '../customs/utilities/constants.dart';
 
-class ItemEquipamentoLista extends StatelessWidget {
-  const ItemEquipamentoLista({
+class WidgetEquipamento extends StatelessWidget {
+  const WidgetEquipamento({
     Key? key,
-    required this.i,
+    required this.equipamento,
     required this.onDelete,
   }) : super(key: key);
 
-  final Equipamento i;
-  final Function(Equipamento) onDelete;
+  final Map equipamento;
+  final Function(Map) onDelete;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: (_) {
-                onDelete(i);
+              onPressed: (context) {
+                onDelete(equipamento['']);
               },
               backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              icon: Icons.delete_rounded,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10.0),
+              ),
               label: 'Remover',
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              icon: Icons.delete_rounded,
             )
           ],
         ),
         child: Container(
-          decoration: pDecoration,
           width: MediaQuery.of(context).size.width,
+          decoration: pDecoration,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  i.equipamento,
-                  style: pTitulo,
-                ),
-                Text(i.detalhes),
+                Text(equipamento['equipamento'], style: pTitulo),
+                Text(equipamento['descricao']),
+                Text(equipamento['numero']),
               ],
             ),
           ),

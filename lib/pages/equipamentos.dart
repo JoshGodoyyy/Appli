@@ -1,7 +1,7 @@
 import 'package:appli/customs/colors/custom_colors.dart';
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:appli/firebase_options.dart';
-import 'package:appli/widgets/item_equipamento.dart';
+import 'package:appli/widgets/widget_equipamento.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -26,7 +26,7 @@ class _EquipamentosState extends State<Equipamentos> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('equipamentos'),
+          title: const Text('Equipamentos'),
           centerTitle: true,
           backgroundColor: CustomColors.pink,
         ),
@@ -44,7 +44,7 @@ class _EquipamentosState extends State<Equipamentos> {
             if (snapshot.connectionState == ConnectionState.done) {
               return FirebaseAnimatedList(
                 query: data,
-                itemBuilder: ((context, snapshot, animation, index) {
+                itemBuilder: (context, snapshot, animation, index) {
                   Map equipamentos = snapshot.value as Map;
                   equipamentos['key'] = snapshot.key;
 
@@ -52,7 +52,7 @@ class _EquipamentosState extends State<Equipamentos> {
                     equipamento: equipamentos,
                     onDelete: onDelete,
                   );
-                }),
+                },
               );
             } else {
               return const Center(child: CircularProgressIndicator());
@@ -139,10 +139,11 @@ class _EquipamentosState extends State<Equipamentos> {
 
                         databaseReference
                             .child('equipamentos')
-                            .child(nomeController.text)
+                            .child(
+                                '${nomeController.text}_${idController.text}')
                             .set({
-                          'nome': nomeController.text,
-                          'id': idController.text,
+                          'equipamento': nomeController.text,
+                          'numero': idController.text,
                           'descricao': descricaoController.text
                         });
 
