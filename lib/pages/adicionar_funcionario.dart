@@ -7,27 +7,27 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-class AdicionarEquipamento extends StatefulWidget {
-  const AdicionarEquipamento({super.key});
+class AdicionarFuncionario extends StatefulWidget {
+  const AdicionarFuncionario({super.key});
 
   @override
-  State<AdicionarEquipamento> createState() => _AdicionarEquipamentoState();
+  State<AdicionarFuncionario> createState() => _AdicionarFuncionarioState();
 }
 
-class _AdicionarEquipamentoState extends State<AdicionarEquipamento> {
+class _AdicionarFuncionarioState extends State<AdicionarFuncionario> {
   getData() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
 
-  Query data = FirebaseDatabase.instance.ref().child('equipamentos');
+  Query data = FirebaseDatabase.instance.ref().child('funcionarios');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Equipamentos'),
+        title: const Text('Funcionários'),
         centerTitle: true,
         backgroundColor: CustomColors.lightOrange,
       ),
@@ -39,9 +39,9 @@ class _AdicionarEquipamentoState extends State<AdicionarEquipamento> {
             return FirebaseAnimatedList(
               query: data,
               itemBuilder: (context, snapshot, animation, index) {
-                Map item = snapshot.value as Map;
-                item['key'] = snapshot.key;
-                return ItemEquipamento(item: item);
+                Map funcionario = snapshot.value as Map;
+                funcionario['key'] = snapshot.key;
+                return ItemFuncionario(funcionario: funcionario);
               },
             );
           } else {
@@ -53,19 +53,20 @@ class _AdicionarEquipamentoState extends State<AdicionarEquipamento> {
   }
 }
 
-class ItemEquipamento extends StatefulWidget {
-  const ItemEquipamento({Key? key, required this.item}) : super(key: key);
+class ItemFuncionario extends StatefulWidget {
+  const ItemFuncionario({Key? key, required this.funcionario})
+      : super(key: key);
 
-  final Map item;
+  final Map funcionario;
 
   @override
-  State<ItemEquipamento> createState() => _ItemEquipamentoState();
+  State<ItemFuncionario> createState() => _ItemFuncionarioState();
 }
 
-class _ItemEquipamentoState extends State<ItemEquipamento> {
+class _ItemFuncionarioState extends State<ItemFuncionario> {
   bool selecionado = false;
 
-  late Equipamento equipamento;
+  late Funcionario funcionario;
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +85,13 @@ class _ItemEquipamentoState extends State<ItemEquipamento> {
                   setState(() {
                     selecionado = value!;
                     if (selecionado == true) {
-                      equipamento = Equipamento(
-                        equipamento: widget.item['equipamento'],
-                        numero: int.parse(widget.item['numero']),
-                        detalhes: widget.item['descricao'],
+                      funcionario = Funcionario(
+                        nome: widget.funcionario['nome'],
+                        funcao: widget.funcionario['funcao'],
                       );
-                      Model.instance.equipamentos.add(equipamento);
+                      Model.instance.funcionarios.add(funcionario);
                     } else {
-                      Model.instance.equipamentos.remove(equipamento);
+                      Model.instance.funcionarios.remove(funcionario);
                     }
                   });
                 },
@@ -100,11 +100,10 @@ class _ItemEquipamentoState extends State<ItemEquipamento> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.item['equipamento'],
+                    widget.funcionario['nome'],
                     style: pTitulo,
                   ),
-                  Text('Detalhe: ${widget.item['numero']}'),
-                  Text('Nº Patrimônio: ${widget.item['descricao']}'),
+                  Text('Função: ${widget.funcionario['funcao']}'),
                 ],
               ),
             ],

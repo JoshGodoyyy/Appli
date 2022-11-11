@@ -42,4 +42,18 @@ class Equipamento {
   }
 }
 
-class Funcionario {}
+class Funcionario {
+  String nome, funcao;
+
+  Funcionario({
+    required this.nome,
+    required this.funcao,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'funcionario': nome,
+      'funcao': funcao,
+    };
+  }
+}

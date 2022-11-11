@@ -2,7 +2,9 @@ import 'package:appli/customs/colors/custom_colors.dart';
 import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/models/model.dart';
 import 'package:appli/pages/adicionar_equipamento.dart';
+import 'package:appli/pages/adicionar_funcionario.dart';
 import 'package:appli/widgets/item_equipamento.dart';
+import 'package:appli/widgets/item_obra.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +15,14 @@ import '../widgets/item.dart';
 import 'adicionar_ferramenta.dart';
 
 class NovaObra extends StatefulWidget {
-  const NovaObra({super.key, required this.obra});
-
-  final Local obra;
+  const NovaObra({super.key});
 
   @override
   State<NovaObra> createState() => _NovaObraState();
 }
 
 class _NovaObraState extends State<NovaObra> {
+  TextEditingController tituloController = TextEditingController();
   TextEditingController enderecoController = TextEditingController();
   Tipos? tipos;
 
@@ -29,12 +30,6 @@ class _NovaObraState extends State<NovaObra> {
     app: Firebase.app(),
     databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
   ).ref();
-
-  @override
-  void initState() {
-    super.initState();
-    enderecoController.text = widget.obra.endereco;
-  }
 
   String tipo() {
     switch (tipos) {
@@ -49,26 +44,42 @@ class _NovaObraState extends State<NovaObra> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.obra.titulo),
+        title: const Text('Cadastrar obra'),
         centerTitle: true,
         backgroundColor: CustomColors.deepPurple,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          if (tituloController.text.isEmpty) {
+            showSnack('Você deve definir o nome da obra');
+            return;
+          }
+          if (enderecoController.text.isEmpty) {
+            showSnack('Você deve preencher o endereço da obra');
+            return;
+          }
           if (tipos == null) {
             showSnack('Você deve selecionar o tipo de obra');
             return;
           }
           databaseReference.child('obras').push()
             ..child('dados').set({
-              'obra': widget.obra.titulo,
+              'obra': tituloController.text.trim(),
               'tipo': tipo(),
               'endereco': enderecoController.text.trim(),
+              'finalizada': false
             })
-            ..child('ferramentas').set(
+            ..child('ferramentas')
+                .set(Model.instance.ferramentas.map((e) => e.toJson()).toList())
+            ..child('equipamentos').set(
+                Model.instance.equipamentos.map((e) => e.toJeysson()).toList())
+            ..child('funcionarios').set(
                 Model.instance.ferramentas.map((e) => e.toJson()).toList());
+
           Model.instance.ferramentas.clear();
+          Model.instance.equipamentos.clear();
+          Model.instance.funcionarios.clear();
 
           Navigator.pop(context);
           showSnack('Cadastrada com sucesso');
@@ -80,11 +91,16 @@ class _NovaObraState extends State<NovaObra> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
-            const Center(
-              child: Text(
-                'Cadastrar nova obra',
-                style: pTitulo,
-              ),
+            const Text(
+              'Nome da obra:',
+              style: pTitulo,
+            ),
+            const SizedBox(height: 8.0),
+            buildTextField(tituloController, 'Obra', Icons.edit),
+            const SizedBox(height: 8.0),
+            const Text(
+              'Endereço da obra:',
+              style: pTitulo,
             ),
             const SizedBox(height: 8.0),
             buildTextField(enderecoController, 'Endereço', Icons.pin_drop),
@@ -138,7 +154,18 @@ class _NovaObraState extends State<NovaObra> {
               const AdicionarEquipamento(),
             ),
             for (var i in Model.instance.equipamentos)
-              ItemEquipamentoLista(i: i, onDelete: onDeleteEquipamento)
+              ItemEquipamentoLista(
+                i: i,
+                onDelete: onDeleteEquipamento,
+              ),
+            const SizedBox(height: 8.0),
+            buildButton(
+              context,
+              'Selecionar funcionários',
+              const AdicionarFuncionario(),
+            ),
+            for (var i in Model.instance.funcionarios)
+              ItemObraLista(i: i, onDelete: onDeleteFuncionario)
           ],
         ),
       ),
@@ -193,6 +220,12 @@ class _NovaObraState extends State<NovaObra> {
   void onDeleteEquipamento(Equipamento equipamento) {
     setState(() {
       Model.instance.equipamentos.remove(equipamento);
+    });
+  }
+
+  void onDeleteFuncionario(Funcionario funcionario) {
+    setState(() {
+      Model.instance.funcionarios.remove(funcionario);
     });
   }
 
