@@ -16,6 +16,13 @@ class Funcionarios extends StatefulWidget {
 }
 
 class _FuncionariosState extends State<Funcionarios> {
+  TextEditingController nomeController = TextEditingController();
+  TextEditingController funcaoController = TextEditingController();
+
+  String textoBotao = 'Adicionar';
+
+  late String path;
+
   final databaseReference = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
@@ -23,10 +30,13 @@ class _FuncionariosState extends State<Funcionarios> {
 
   Query data = FirebaseDatabase.instance.ref().child('funcionarios');
 
+  void clearAll() {
+    nomeController.clear();
+    funcaoController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController nomeController = TextEditingController();
-    TextEditingController funcaoController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Funcionários'),
@@ -71,20 +81,35 @@ class _FuncionariosState extends State<Funcionarios> {
                           showSnack('Você precisa digitar um nome e função');
                           return;
                         }
-                        databaseReference
-                            .child('funcionarios')
-                            .child(nomeController.text)
-                            .set({
-                          'nome': nomeController.text,
-                          'funcao': funcaoController.text
-                        });
+                        if (textoBotao == 'Adicionar') {
+                          databaseReference
+                              .child('funcionarios')
+                              .child(nomeController.text)
+                              .set({
+                            'nome': nomeController.text,
+                            'funcao': funcaoController.text
+                          });
+                        } else {
+                          DatabaseReference reference = FirebaseDatabase
+                              .instance
+                              .ref()
+                              .child('funcionarios')
+                              .child(path);
+
+                          reference.update({
+                            'nome': nomeController.text,
+                            'funcao': funcaoController.text
+                          });
+                          clearAll();
+                          setState(() => textoBotao = 'Adicionar');
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(16.0),
                         backgroundColor: CustomColors.deepPurple,
                       ),
-                      child: const Text(
-                        'Adicionar',
+                      child: Text(
+                        textoBotao,
                       ),
                     ),
                   ),
@@ -105,7 +130,7 @@ class _FuncionariosState extends State<Funcionarios> {
                       Map funcionarios = snapshot.value as Map;
                       funcionarios['key'] = snapshot.key;
                       return WidgetFuncionario(
-                          funcionario: funcionarios, onDelete: onDelete);
+                          funcionario: funcionarios, onTap: onTap);
                     },
                   ),
                 ),
@@ -123,8 +148,11 @@ class _FuncionariosState extends State<Funcionarios> {
     );
   }
 
-  void onDelete(Map) {
-    setState(() {});
+  void onTap(Map item) {
+    nomeController.text = item['nome'];
+    funcaoController.text = item['funcao'];
+    setState(() => textoBotao = 'Editar');
+    path = item['key'];
   }
 
   Padding buildText(

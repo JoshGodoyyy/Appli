@@ -33,15 +33,15 @@ class _ItensState extends State<Itens> {
           if (snapshot.connectionState == ConnectionState.done) {
             return FirebaseAnimatedList(
               query: data,
-              itemBuilder: ((context, snapshot, animation, index) {
+              itemBuilder: (context, snapshot, animation, index) {
                 Map epis = snapshot.value as Map;
                 epis['key'] = snapshot.key;
 
                 return Item(
                   itemEstoque: epis,
-                  onDelete: onDelete,
+                  onTap: onTap,
                 );
-              }),
+              },
             );
           } else {
             return const Center(child: CircularProgressIndicator());
@@ -50,7 +50,7 @@ class _ItensState extends State<Itens> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModal(context);
+          showModal(context, null, 'Adicionar');
         },
         backgroundColor: CustomColors.orange,
         child: const Icon(Icons.add),
@@ -58,8 +58,8 @@ class _ItensState extends State<Itens> {
     );
   }
 
-  void onDelete(Map) {
-    setState(() {});
+  void onTap(Map item) {
+    showModal(context, item, 'Editar');
   }
 
   getData() async {
@@ -68,16 +68,25 @@ class _ItensState extends State<Itens> {
     );
   }
 
-  Future<dynamic> showModal(BuildContext context) {
+  Future<dynamic> showModal(
+      BuildContext context, Map? item, String textoBotao) {
     TextEditingController itemController = TextEditingController();
     TextEditingController detalhesController = TextEditingController();
     TextEditingController quantidadeController = TextEditingController();
+
+    void init() {
+      itemController.text = item!['item'];
+      detalhesController.text = item['detalhes'];
+      quantidadeController.text = item['quantidade'];
+    }
 
     void clearAll() {
       itemController.clear();
       detalhesController.clear();
       quantidadeController.clear();
     }
+
+    item == null ? null : init();
 
     return showModalBottomSheet(
       context: context,
@@ -135,14 +144,28 @@ class _ItensState extends State<Itens> {
                           return;
                         }
 
-                        databaseReference
-                            .child('epis')
-                            .child(itemController.text)
-                            .set({
-                          'item': itemController.text,
-                          'detalhes': detalhesController.text,
-                          'quantidade': quantidadeController.text
-                        });
+                        if (textoBotao == 'Adicionar') {
+                          databaseReference
+                              .child('epis')
+                              .child(itemController.text)
+                              .set({
+                            'item': itemController.text,
+                            'detalhes': detalhesController.text,
+                            'quantidade': quantidadeController.text
+                          });
+                        } else {
+                          DatabaseReference ref = FirebaseDatabase.instance
+                              .ref('epis')
+                              .child(item!['key']);
+
+                          ref.update({
+                            'item': itemController.text,
+                            'detalhes': detalhesController.text,
+                            'quantidade': quantidadeController.text
+                          });
+
+                          Navigator.pop(context);
+                        }
 
                         clearAll();
                       },

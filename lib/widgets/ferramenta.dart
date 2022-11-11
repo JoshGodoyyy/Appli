@@ -1,16 +1,25 @@
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class WidgetFerramenta extends StatelessWidget {
+class WidgetFerramenta extends StatefulWidget {
   const WidgetFerramenta({
     super.key,
     required this.ferramenta,
-    required this.onDelete,
+    required this.onTap,
   });
 
   final Map ferramenta;
-  final Function(Map) onDelete;
+  final Function(Map) onTap;
+
+  @override
+  State<WidgetFerramenta> createState() => _WidgetFerramentaState();
+}
+
+class _WidgetFerramentaState extends State<WidgetFerramenta> {
+  DatabaseReference databaseReference =
+      FirebaseDatabase.instance.ref().child('ferramentas');
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +30,32 @@ class WidgetFerramenta extends StatelessWidget {
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) => onDelete(ferramenta['']),
+              onPressed: (context) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Atenção'),
+                        content: const Text(
+                            'Tem certeza que deseja apagar este item?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              databaseReference
+                                  .child(widget.ferramenta['key'])
+                                  .remove();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Sim'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Não'),
+                          ),
+                        ],
+                      );
+                    });
+              },
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_rounded,
@@ -30,26 +64,32 @@ class WidgetFerramenta extends StatelessWidget {
             ),
           ],
         ),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: pDecoration,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      ferramenta['ferramenta'],
-                      style: pTitulo,
-                    ),
-                    Text(ferramenta['detalhes']),
-                  ],
-                ),
-                Text(ferramenta['quantidade']),
-              ],
+        child: Material(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 7,
+          child: InkWell(
+            onTap: () => widget.onTap(widget.ferramenta),
+            borderRadius: BorderRadius.circular(10.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.ferramenta['ferramenta'],
+                        style: pTitulo,
+                      ),
+                      Text(widget.ferramenta['detalhes']),
+                    ],
+                  ),
+                  Text(widget.ferramenta['quantidade']),
+                ],
+              ),
             ),
           ),
         ),

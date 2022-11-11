@@ -1,5 +1,4 @@
 import 'package:appli/customs/colors/custom_colors.dart';
-import 'package:appli/customs/models/data.dart';
 import 'package:appli/customs/models/model.dart';
 import 'package:appli/pages/adicionar_equipamento.dart';
 import 'package:appli/pages/adicionar_funcionario.dart';

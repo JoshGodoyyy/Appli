@@ -33,7 +33,11 @@ class _FerramentasState extends State<Ferramentas> {
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModal(context);
+          showModal(
+            context,
+            null,
+            'Adicionar',
+          );
         },
         backgroundColor: CustomColors.deepBlue,
         child: const Icon(Icons.add),
@@ -47,8 +51,7 @@ class _FerramentasState extends State<Ferramentas> {
               itemBuilder: (context, snapshot, animation, index) {
                 Map ferramentas = snapshot.value as Map;
                 ferramentas['key'] = snapshot.key;
-                return WidgetFerramenta(
-                    ferramenta: ferramentas, onDelete: onDelete);
+                return WidgetFerramenta(ferramenta: ferramentas, onTap: onTap);
               },
             );
           } else {
@@ -59,8 +62,12 @@ class _FerramentasState extends State<Ferramentas> {
     );
   }
 
-  void onDelete(Map) {
-    setState(() {});
+  void onTap(Map item) {
+    showModal(
+      context,
+      item,
+      'Editar',
+    );
   }
 
   getData() async {
@@ -69,16 +76,28 @@ class _FerramentasState extends State<Ferramentas> {
     );
   }
 
-  Future<dynamic> showModal(BuildContext context) {
+  Future<dynamic> showModal(
+    BuildContext context,
+    Map? item,
+    String textoBotao,
+  ) {
     TextEditingController ferramentaController = TextEditingController();
     TextEditingController detalhesController = TextEditingController();
     TextEditingController quantidadeController = TextEditingController();
+
+    void init() {
+      ferramentaController.text = item!['ferramenta'];
+      detalhesController.text = item['detalhes'];
+      quantidadeController.text = item['quantidade'];
+    }
 
     void clearAll() {
       ferramentaController.clear();
       detalhesController.clear();
       quantidadeController.clear();
     }
+
+    item == null ? null : init();
 
     return showModalBottomSheet(
       context: context,
@@ -135,15 +154,29 @@ class _FerramentasState extends State<Ferramentas> {
                             return;
                           }
 
-                          databaseReference
-                              .child('ferramentas')
-                              .child(
-                                  '${ferramentaController.text}_${detalhesController.text}')
-                              .set({
-                            'ferramenta': ferramentaController.text,
-                            'detalhes': detalhesController.text,
-                            'quantidade': quantidadeController.text
-                          });
+                          if (textoBotao == 'Adicionar') {
+                            databaseReference
+                                .child('ferramentas')
+                                .child(
+                                    '${ferramentaController.text}_${detalhesController.text}')
+                                .set({
+                              'ferramenta': ferramentaController.text,
+                              'detalhes': detalhesController.text,
+                              'quantidade': quantidadeController.text
+                            });
+                          } else {
+                            DatabaseReference ref = FirebaseDatabase.instance
+                                .ref('ferramentas')
+                                .child(item!['key']);
+
+                            ref.update({
+                              'ferramenta': ferramentaController.text,
+                              'detalhes': detalhesController.text,
+                              'quantidade': quantidadeController.text
+                            });
+
+                            Navigator.pop(context);
+                          }
 
                           clearAll();
                         },
@@ -151,7 +184,7 @@ class _FerramentasState extends State<Ferramentas> {
                           backgroundColor: CustomColors.deepBlue,
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Adicionar'),
+                        child: Text(textoBotao),
                       ),
                     ),
                   ),

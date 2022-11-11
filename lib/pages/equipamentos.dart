@@ -25,40 +25,41 @@ class _EquipamentosState extends State<Equipamentos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Equipamentos'),
-          centerTitle: true,
-          backgroundColor: CustomColors.pink,
-        ),
-        backgroundColor: Theme.of(context).backgroundColor,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showModal(context);
-          },
-          backgroundColor: CustomColors.pink,
-          child: const Icon(Icons.add),
-        ),
-        body: FutureBuilder(
-          future: getData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return FirebaseAnimatedList(
-                query: data,
-                itemBuilder: (context, snapshot, animation, index) {
-                  Map equipamentos = snapshot.value as Map;
-                  equipamentos['key'] = snapshot.key;
+      appBar: AppBar(
+        title: const Text('Equipamentos'),
+        centerTitle: true,
+        backgroundColor: CustomColors.pink,
+      ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModal(context, null, 'Adicionar');
+        },
+        backgroundColor: CustomColors.pink,
+        child: const Icon(Icons.add),
+      ),
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return FirebaseAnimatedList(
+              query: data,
+              itemBuilder: (context, snapshot, animation, index) {
+                Map equipamentos = snapshot.value as Map;
+                equipamentos['key'] = snapshot.key;
 
-                  return WidgetEquipamento(
-                    equipamento: equipamentos,
-                    onDelete: onDelete,
-                  );
-                },
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ));
+                return WidgetEquipamento(
+                  equipamento: equipamentos,
+                  onTap: onTap,
+                );
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 
   getData() async {
@@ -67,20 +68,32 @@ class _EquipamentosState extends State<Equipamentos> {
     );
   }
 
-  void onDelete(Map) {
-    setState(() {});
+  void onTap(Map item) {
+    showModal(context, item, 'Editar');
   }
 
-  Future<dynamic> showModal(BuildContext context) {
+  Future<dynamic> showModal(
+    BuildContext context,
+    Map? item,
+    String textoBotao,
+  ) {
     TextEditingController nomeController = TextEditingController();
     TextEditingController idController = TextEditingController();
     TextEditingController descricaoController = TextEditingController();
+
+    void init() {
+      nomeController.text = item!['equipamento'];
+      descricaoController.text = item['descricao'];
+      idController.text = item['numero'];
+    }
 
     void clearAll() {
       nomeController.clear();
       idController.clear();
       descricaoController.clear();
     }
+
+    item == null ? null : init();
 
     return showModalBottomSheet(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -137,15 +150,29 @@ class _EquipamentosState extends State<Equipamentos> {
                           return;
                         }
 
-                        databaseReference
-                            .child('equipamentos')
-                            .child(
-                                '${nomeController.text}_${idController.text}')
-                            .set({
-                          'equipamento': nomeController.text,
-                          'numero': idController.text,
-                          'descricao': descricaoController.text
-                        });
+                        if (textoBotao == 'Adicionar') {
+                          databaseReference
+                              .child('equipamentos')
+                              .child(
+                                  '${nomeController.text}_${idController.text}')
+                              .set({
+                            'equipamento': nomeController.text,
+                            'numero': idController.text,
+                            'descricao': descricaoController.text
+                          });
+                        } else {
+                          DatabaseReference ref = FirebaseDatabase.instance
+                              .ref('equipamentos')
+                              .child(item!['key']);
+
+                          ref.update({
+                            'equipamento': nomeController.text,
+                            'numero': idController.text,
+                            'descricao': descricaoController.text
+                          });
+
+                          Navigator.pop(context);
+                        }
 
                         clearAll();
                       },
