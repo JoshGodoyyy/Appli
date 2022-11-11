@@ -1,6 +1,8 @@
 import 'package:appli/customs/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/editar_obra.dart';
+
 class WidgetLocal extends StatelessWidget {
   const WidgetLocal({super.key, required this.obra});
   final Map obra;
@@ -22,9 +24,11 @@ class WidgetLocal extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () {
-              print(obra);
-            },
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EditarObra(obra: obra),
+              ),
+            ),
             borderRadius: const BorderRadius.all(
               Radius.circular(20.0),
             ),

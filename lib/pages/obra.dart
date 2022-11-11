@@ -74,7 +74,7 @@ class _NovaObraState extends State<NovaObra> {
             ..child('equipamentos').set(
                 Model.instance.equipamentos.map((e) => e.toJeysson()).toList())
             ..child('funcionarios').set(
-                Model.instance.ferramentas.map((e) => e.toJson()).toList());
+                Model.instance.funcionarios.map((e) => e.toJson()).toList());
 
           Model.instance.ferramentas.clear();
           Model.instance.equipamentos.clear();
