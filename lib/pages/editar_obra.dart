@@ -29,10 +29,18 @@ class _EditarObraState extends State<EditarObra> {
       body: PageView(
         controller: _controller,
         children: [
-          DadosObra(),
-          FerramentasObra(),
-          EquipamentosObra(),
-          FuncionariosObra(),
+          DadosObra(
+            obra: widget.obra,
+          ),
+          FerramentasObra(
+            obra: widget.obra,
+          ),
+          EquipamentosObra(
+            obra: widget.obra,
+          ),
+          FuncionariosObra(
+            obra: widget.obra,
+          ),
         ],
       ),
       extendBody: true,
@@ -52,14 +60,18 @@ class _EditarObraState extends State<EditarObra> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => _controller.animateToPage(0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut),
                 icon: const Icon(
                   Icons.info_outline,
                   color: Colors.white,
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => _controller.animateToPage(1,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut),
                 icon: const Icon(
                   Icons.hardware,
                   color: Colors.white,
@@ -67,14 +79,18 @@ class _EditarObraState extends State<EditarObra> {
               ),
               const SizedBox(width: 24),
               IconButton(
-                onPressed: () {},
+                onPressed: () => _controller.animateToPage(2,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut),
                 icon: const Icon(
                   Icons.handyman_rounded,
                   color: Colors.white,
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => _controller.animateToPage(3,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut),
                 icon: const Icon(
                   Icons.group,
                   color: Colors.white,

@@ -25,6 +25,8 @@ class _NovaObraState extends State<NovaObra> {
   TextEditingController enderecoController = TextEditingController();
   Tipos? tipos;
 
+  DateTime? inicio, fim;
+
   final databaseReference = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL: 'https://appli-cef3f-default-rtdb.firebaseio.com/',
@@ -38,6 +40,9 @@ class _NovaObraState extends State<NovaObra> {
         return 'Empresa';
     }
   }
+
+  String dataInicial = 'Selecionar';
+  String dataFinal = 'Selecionar';
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +67,18 @@ class _NovaObraState extends State<NovaObra> {
             showSnack('Você deve selecionar o tipo de obra');
             return;
           }
+          if (dataInicial == 'Selecionar' || dataFinal == 'Selecionar') {
+            showSnack('A obra deve ter data de início e finalização');
+            return;
+          }
           databaseReference.child('obras').push()
             ..child('dados').set({
               'obra': tituloController.text.trim(),
               'tipo': tipo(),
               'endereco': enderecoController.text.trim(),
+              'dataInicial': inicio!.toString(),
+              'previsaoEntrega': fim!.toString(),
+              'entrega': fim!.toString(),
               'finalizada': false
             })
             ..child('ferramentas')
@@ -135,6 +147,65 @@ class _NovaObraState extends State<NovaObra> {
                   ),
                 ],
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Início', style: pTitulo),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2022),
+                        lastDate: DateTime(2030),
+                        locale: const Locale('pt', 'BR'),
+                      ).then((value) {
+                        int d, m, a;
+                        d = value!.day;
+                        m = value.month;
+                        a = value.year;
+                        inicio = value;
+                        setState(() => dataInicial = '$d/$m/$a');
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                      backgroundColor: CustomColors.deepPurple,
+                    ),
+                    child: Text(dataInicial),
+                  ),
+                ),
+                const Text('Fim', style: pTitulo),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2022),
+                        lastDate: DateTime(2030),
+                        locale: const Locale('pt', 'BR'),
+                      ).then((value) {
+                        int d, m, a;
+                        d = value!.day;
+                        m = value.month;
+                        a = value.year;
+                        fim = value;
+                        setState(() => dataFinal = '$d/$m/$a');
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                      backgroundColor: CustomColors.deepPurple,
+                    ),
+                    child: Text(dataFinal),
+                  ),
+                ),
+              ],
             ),
             buildButton(
               context,
