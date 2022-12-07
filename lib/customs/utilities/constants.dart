@@ -6,6 +6,13 @@ const pFonte = TextStyle(
   fontFamily: 'OpenSans',
 );
 
+Container pContainer(Widget child) {
+  return Container(
+    decoration: pDecoration,
+    child: child,
+  );
+}
+
 const pShadow = BoxShadow(
   color: Colors.grey,
   offset: Offset(5, 5),

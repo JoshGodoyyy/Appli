@@ -23,9 +23,13 @@ class MyApp extends StatelessWidget {
       home: const MainPage(),
       theme: lightTheme,
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
-      supportedLocales: [
-        const Locale('pt'),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: const [
+        Locale('pt'),
       ],
     );
   }
