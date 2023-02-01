@@ -1,4 +1,5 @@
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/pages/sobre.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -79,7 +80,10 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Sobre()));
+                        },
                         child: const Text(
                           'Esqueceu a senha?',
                           style: TextStyle(color: Colors.white),

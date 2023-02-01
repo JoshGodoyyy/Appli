@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'package:appli/pages/login.dart';
 import 'package:appli/pages/obras.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -107,142 +108,153 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Olá, nome
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              color: CustomColors.deepPurple,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10.0),
-                bottomRight: Radius.circular(10.0),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Olá, ${Util.usuario}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 8.0),
-          //Calendario
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-            child: ListDate(),
-          ),
-
-          const SizedBox(height: 4.0),
-
-          //Lista de ações
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-            child: Container(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Olá, nome
+            Container(
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.white,
-                boxShadow: const [
-                  pShadow,
-                ],
+              decoration: const BoxDecoration(
+                color: CustomColors.deepPurple,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ),
               ),
-              child: Column(
-                children: [
-                  //Ferra,emtas
-                  ItemButton(
-                    title: 'Ferramentas',
-                    icon: Icons.hardware_rounded,
-                    color: CustomColors.deepBlue,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Ferramentas(),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Olá, ${Util.usuario}',
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  //Estoque
-                  ItemButton(
-                    title: 'Estoque',
-                    icon: Icons.inventory,
-                    color: CustomColors.orange,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Estoque(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.person,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  //Equipamentos
-                  ItemButton(
-                    title: 'Equipamentos',
-                    icon: Icons.handyman_rounded,
-                    color: CustomColors.pink,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Equipamentos(),
-                      ),
-                    ),
-                  ),
-                  //Funcionários
-                  ItemButton(
-                    title: 'Funcionários',
-                    icon: Icons.group,
-                    color: CustomColors.deepPurple,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const Funcionarios(),
-                      ),
-                    ),
-                  ),
-                  //Obras
-                  ItemButton(
-                    title: 'Obras',
-                    icon: Icons.business_center,
-                    color: CustomColors.deepBlue,
-                    onTap: () => onTap(
-                      MaterialPageRoute(
-                        builder: (context) => const TodasAsObras(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          //Check conexão
-          Visibility(
-            visible: conexao() == 'Conectado' ? false : true,
-            child: Container(
-              color: conexao() != 'Conectado' ? Colors.red : null,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Text(
-                  conexao(),
-                  textAlign: TextAlign.center,
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 8.0),
+            //Calendario
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+              child: ListDate(),
+            ),
+
+            const SizedBox(height: 4.0),
+
+            //Lista de ações
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                  boxShadow: const [
+                    pShadow,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    //Ferra,emtas
+                    ItemButton(
+                      title: 'Ferramentas',
+                      icon: Icons.hardware_rounded,
+                      color: CustomColors.deepBlue,
+                      onTap: () => onTap(
+                        MaterialPageRoute(
+                          builder: (context) => const Ferramentas(),
+                        ),
+                      ),
+                    ),
+                    //Estoque
+                    ItemButton(
+                      title: 'Estoque',
+                      icon: Icons.inventory,
+                      color: CustomColors.orange,
+                      onTap: () => onTap(
+                        MaterialPageRoute(
+                          builder: (context) => const Estoque(),
+                        ),
+                      ),
+                    ),
+                    //Equipamentos
+                    ItemButton(
+                      title: 'Equipamentos',
+                      icon: Icons.handyman_rounded,
+                      color: CustomColors.pink,
+                      onTap: () => onTap(
+                        MaterialPageRoute(
+                          builder: (context) => const Equipamentos(),
+                        ),
+                      ),
+                    ),
+                    //Funcionários
+                    ItemButton(
+                      title: 'Funcionários',
+                      icon: Icons.group,
+                      color: CustomColors.deepPurple,
+                      onTap: () => onTap(
+                        MaterialPageRoute(
+                          builder: (context) => const Funcionarios(),
+                        ),
+                      ),
+                    ),
+                    //Obras
+                    ItemButton(
+                      title: 'Obras',
+                      icon: Icons.business_center,
+                      color: CustomColors.deepBlue,
+                      onTap: () => onTap(
+                        MaterialPageRoute(
+                          builder: (context) => const TodasAsObras(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Login(),
+                ),
+              ),
+              child: const Text('Login'),
+            ),
+
+            //Check conexão
+            Visibility(
+              visible: conexao() == 'Conectado' ? false : true,
+              child: Container(
+                color: conexao() != 'Conectado' ? Colors.red : null,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    conexao(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

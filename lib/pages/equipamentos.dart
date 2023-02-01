@@ -1,5 +1,6 @@
 import 'package:appli/customs/colors/custom_colors.dart';
 import 'package:appli/customs/utilities/constants.dart';
+import 'package:appli/customs/utilities/status.dart';
 import 'package:appli/firebase_options.dart';
 import 'package:appli/widgets/widget_equipamento.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -144,7 +145,8 @@ class _EquipamentosState extends State<Equipamentos> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                  'Você precisa preencher todos os campos'),
+                                'Você precisa preencher todos os campos',
+                              ),
                             ),
                           );
                           return;
@@ -158,7 +160,8 @@ class _EquipamentosState extends State<Equipamentos> {
                               .set({
                             'equipamento': nomeController.text,
                             'numero': idController.text,
-                            'descricao': descricaoController.text
+                            'descricao': descricaoController.text,
+                            'status': Status.disponivel
                           });
                         } else {
                           DatabaseReference ref = FirebaseDatabase.instance

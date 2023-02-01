@@ -13,6 +13,9 @@ class Relatorio extends StatefulWidget {
 
 class _RelatorioState extends State<Relatorio> {
   String valor = Status.disponivel;
+
+  bool isVisible() => valor == Status.manutencao ? true : false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,20 +66,33 @@ class _RelatorioState extends State<Relatorio> {
                   ),
                 ),
               ),
+            ),
+            Visibility(
+              visible: isVisible(),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              OrdemDeServico(item: widget.item),
+                        ),
+                      )
+                      .then((value) => print('a'));
+                },
+                child: const Center(
+                  child: Text(
+                    'Nova Ordem de Serviço',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+              ),
             )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (valor == Status.manutencao) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => OrdemDeServico(item: widget.item),
-              ),
-            );
-          }
-        },
+        onPressed: () {},
         child: const Icon(Icons.check),
       ),
     );
