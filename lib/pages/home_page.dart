@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'package:appli/pages/login.dart';
 import 'package:appli/pages/obras.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -203,17 +202,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    //Funcionários
-                    ItemButton(
-                      title: 'Funcionários',
-                      icon: Icons.group,
-                      color: CustomColors.deepPurple,
-                      onTap: () => onTap(
-                        MaterialPageRoute(
-                          builder: (context) => const Funcionarios(),
-                        ),
-                      ),
-                    ),
                     //Obras
                     ItemButton(
                       title: 'Obras',
@@ -229,16 +217,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Login(),
-                ),
-              ),
-              child: const Text('Login'),
-            ),
-
             //Check conexão
             Visibility(
               visible: conexao() == 'Conectado' ? false : true,
